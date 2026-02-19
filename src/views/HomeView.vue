@@ -11,8 +11,8 @@ import rtscene from '../assets/rtscene.jpg'
         <img :src="logo" alt="Rustblood" class="hero-logo" />
         <p class="tagline">Born of Rust forged in Blood</p>
         <div class="hero-btns">
-          <RouterLink to="/musica" class="btn btn-primary">Escuchar Ahora</RouterLink>
-          <RouterLink to="/eventos" class="btn btn-secondary">Ver Fechas</RouterLink>
+          <RouterLink to="/musica" class="btn btn-primary">Listen Now</RouterLink>
+          <RouterLink to="/eventos" class="btn btn-secondary">View Dates</RouterLink>
         </div>
       </div>
       <div class="hero-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
@@ -20,27 +20,27 @@ import rtscene from '../assets/rtscene.jpg'
 
     <section class="about-preview">
       <div class="container">
-        <h2 class="section-title">Sobre Nosotros</h2>
+        <h2 class="section-title">About Us</h2>
         <p>
-          Formada en enero de 2024 en Tepatitlán de Morelos, en la región de Los Altos de Jalisco, México. Rustblood es una banda mexicana de death metal progresivo que busca abrir nuevas grietas en la brutalidad sonora tradicional. Las inﬂuencias de la banda incluyen a Death, Gojira, Opeth, y Dream Theater, entre otros, mezclando la crudeza del death metal con elementos progresivos y pasajes melódicos.
+          Formed in January 2024 in Tepatitlán de Morelos, in the Los Altos region of Jalisco, Mexico. Rustblood is a Mexican progressive death metal band seeking to carve new paths in traditional sonic brutality. The band's influences include Death, Gojira, Opeth, and Dream Theater, blending the crudeness of death metal with progressive elements and melodic passages.
 
-Su música se caracteriza por riffs contundentes, estructuras no lineales, pasajes melódicos cuidadosamente elaborados y una ejecución intensa tanto en estudio como en vivo. Fundada por el bajista Lemmy Yeudhiel y el baterista Alan Gómez, la alineación actual incluye también al guitarrista Joshua Giacomo y al vocalista/guitarrista Edson Muñoz.
+Their music is characterized by powerful riffs, non-linear structures, carefully crafted melodic passages, and intense execution both in the studio and live. Founded by bassist Lemmy Yeudhiel and drummer Alan Gómez, the current lineup also includes guitarist Joshua Giacomo and vocalist/guitarist Edson Muñoz.
 
-Su enfoque lírico y musical aborda temas existenciales, ﬁlosóﬁcos y psicológicos, explorando el colapso del ser, el caos interno y la libertad a través del dolor. En poco tiempo, Rustblood ha presentado seis canciones originales: Hope Denied, Forged in blood, In a Crypt, Holow Throne, Dissolution Beyond y Freedom of Die. Actualmente se encuentran componiendo nuevo material para ampliar su propuesta sonora.
+Their lyrical and musical approach addresses existential, philosophical, and psychological themes, exploring the collapse of the self, internal chaos, and freedom through pain. In a short time, Rustblood has presented six original songs: Hope Denied, Forged in Blood, In a Crypt, Hollow Throne, Dissolution Beyond, and Freedom of Die. They are currently composing new material to expand their sonic proposal.
         </p>
-        <RouterLink to="/contacto" class="btn btn-secondary">Contáctanos</RouterLink>
+        <RouterLink to="/contacto" class="btn btn-secondary">Contact Us</RouterLink>
       </div>
     </section>
 
     <section class="featured-music">
       <div class="container">
-        <h2 class="section-title">Último Lanzamiento</h2>
+        <h2 class="section-title">Latest Release</h2>
         <div class="featured-album">
           <div class="album-cover">🔥</div>
           <div class="album-info">
             <h3>Rust & Bone</h3>
             <p>2025</p>
-            <RouterLink to="/musica" class="btn btn-primary">Ver Discografía</RouterLink>
+            <RouterLink to="/musica" class="btn btn-primary">View Discography</RouterLink>
           </div>
         </div>
       </div>

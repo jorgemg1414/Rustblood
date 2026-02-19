@@ -9,27 +9,27 @@ interface Service {
 const services: Service[] = [
   {
     icon: '🎵',
-    title: 'Producción Musical',
-    description: 'Grabación, mezcla y masterización con sonido profesional adaptado a metal y géneros pesados.',
-    features: ['Grabación en estudio', 'Mezcla y masterización', 'Producción ejecutiva', 'Asesoría musical']
+    title: 'Music Production',
+    description: 'Recording, mixing and mastering with professional sound adapted to metal and heavy genres.',
+    features: ['Studio Recording', 'Mixing & Mastering', 'Executive Production', 'Musical Advisory']
   },
   {
     icon: '🎸',
-    title: 'Sesión de Músicos',
-    description: 'Contamos con músicos profesionales para sesiones de grabación en tus proyectos.',
-    features: ['Guitarras eléctricas y acústicas', 'Bajo', 'Batería', 'Teclados y sintes']
+    title: 'Session Musicians',
+    description: 'We have professional musicians for recording sessions on your projects.',
+    features: ['Electric & Acoustic Guitars', 'Bass', 'Drums', 'Keys & Synths']
   },
   {
     icon: '🎬',
-    title: 'Producción Audiovisual',
-    description: 'Creación de contenido visual para bandas: videoclips, documentales y material promocional.',
-    features: ['Videoclips', 'Documentales', 'Grabación en vivo', 'Animación']
+    title: 'Audiovisual Production',
+    description: 'Creating visual content for bands: music videos, documentaries and promotional material.',
+    features: ['Music Videos', 'Documentaries', 'Live Recording', 'Animation']
   },
   {
     icon: '📢',
-    title: 'Booking y Gestión',
-    description: 'Gestionamos actuaciones, giras y contactos con festivales y salas.',
-    features: ['Gestión de boliches', 'Contacto con festivales', 'Logística de gira', 'Asesoría de imagen']
+    title: 'Booking & Management',
+    description: 'We manage performances, tours and contacts with festivals and venues.',
+    features: ['Venue Booking', 'Festival Contacts', 'Tour Logistics', 'Image Advisory']
   }
 ]
 </script>
@@ -37,8 +37,8 @@ const services: Service[] = [
 <template>
   <div class="servicios">
     <section class="page-header">
-      <h1 class="page-title">Servicios</h1>
-      <p class="page-subtitle">Lo que oferecemos</p>
+      <h1 class="page-title">Services</h1>
+      <p class="page-subtitle">What we offer</p>
     </section>
 
     <section class="services-section">
@@ -55,8 +55,8 @@ const services: Service[] = [
         </div>
 
         <div class="cta-section">
-          <p>¿Interesado en alguno de nuestros servicios?</p>
-          <RouterLink to="/contacto" class="btn btn-primary">Contáctanos</RouterLink>
+          <p>Interested in any of our services?</p>
+          <RouterLink to="/contacto" class="btn btn-primary">Contact Us</RouterLink>
         </div>
       </div>
     </section>

@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import rb1 from '../assets/photos/rb1.jpg'
-import rb2 from '../assets/photos/rb2.jpeg'
-import rb3 from '../assets/photos/rb3.jpeg'
-import rb4 from '../assets/photos/rb4.jpeg'
+import { ref, onMounted } from 'vue'
+import { supabase } from '../supabase'
 
 interface Photo {
   id: number
-  src: string
-  alt: string
+  title: string
+  image_url: string
 }
 
-const photos = ref<Photo[]>([
-  { id: 1, src: rb1, alt: 'Concierto 1' },
-  { id: 2, src: rb2, alt: 'Concierto 2' },
-  { id: 3, src: rb3, alt: 'Concierto 3' },
-  { id: 4, src: rb4, alt: 'Concierto 4' }
-])
+const photos = ref<Photo[]>([])
 const selectedPhoto = ref<Photo | null>(null)
+const loading = ref(true)
+
+const fetchPhotos = async () => {
+  loading.value = true
+  const { data, error } = await supabase
+    .from('gallery')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (!error && data) {
+    photos.value = data
+  }
+  loading.value = false
+}
 
 const openLightbox = (photo: Photo) => {
   selectedPhoto.value = photo
@@ -26,22 +32,32 @@ const openLightbox = (photo: Photo) => {
 const closeLightbox = () => {
   selectedPhoto.value = null
 }
+
+onMounted(() => {
+  fetchPhotos()
+})
 </script>
 
 <template>
   <div class="galeria">
     <div class="container">
-      <h1 class="title">Galería</h1>
-      <p class="subtitle">Nuestros conciertos</p>
+      <h1 class="title">Gallery</h1>
+      <p class="subtitle">Our concerts</p>
       
-      <div class="gallery-grid">
+      <div v-if="loading" class="loading">Loading...</div>
+      
+      <div v-else-if="photos.length === 0" class="empty">
+        <p>No photos yet. <a href="/admin">Add photos</a></p>
+      </div>
+      
+      <div v-else class="gallery-grid">
         <div 
           v-for="photo in photos" 
           :key="photo.id" 
           class="gallery-item"
           @click="openLightbox(photo)"
         >
-          <img :src="photo.src" :alt="photo.alt" />
+          <img :src="photo.image_url" :alt="photo.title" />
         </div>
       </div>
     </div>
@@ -49,7 +65,7 @@ const closeLightbox = () => {
     <Teleport to="body">
       <div v-if="selectedPhoto" class="lightbox" @click="closeLightbox">
         <button class="close-btn" @click="closeLightbox">×</button>
-        <img :src="selectedPhoto.src" :alt="selectedPhoto.alt" />
+        <img :src="selectedPhoto.image_url" :alt="selectedPhoto.title" />
       </div>
     </Teleport>
   </div>
@@ -84,6 +100,17 @@ const closeLightbox = () => {
   text-align: center;
   margin-bottom: 3rem;
   letter-spacing: 0.1em;
+}
+
+.loading, .empty {
+  text-align: center;
+  color: #666;
+  font-family: 'Oswald', sans-serif;
+  padding: 4rem;
+}
+
+.empty a {
+  color: #c44536;
 }
 
 .gallery-grid {

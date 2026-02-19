@@ -13,7 +13,7 @@ import Navbar from './components/Navbar.vue'
     </RouterView>
   </main>
   <footer class="footer">
-    <p>&copy; 2026 Rustblood. Todos los derechos reservados.</p>
+    <p>&copy; 2026 Rustblood. All rights reserved.</p>
   </footer>
 </template>
 

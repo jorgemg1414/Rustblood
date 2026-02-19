@@ -21,8 +21,8 @@ const submitForm = () => {
 
 const contactInfo = [
   { icon: '📧', label: 'Email', value: 'booking@rustblood.com' },
-  { icon: '📱', label: 'Teléfono', value: '+123 456 7890' },
-  { icon: '📍', label: 'Ubicación', value: 'Tepatitlán de Morelos, Jalisco, México' }
+  { icon: '📱', label: 'Phone', value: '+123 456 7890' },
+  { icon: '📍', label: 'Location', value: 'Tepatitlán de Morelos, Jalisco, Mexico' }
 ]
 
 const socialLinks = [
@@ -35,15 +35,15 @@ const socialLinks = [
 <template>
   <div class="contacto">
     <section class="page-header">
-      <h1 class="page-title">Contacto</h1>
-      <p class="page-subtitle">Escríbenos</p>
+      <h1 class="page-title">Contact</h1>
+      <p class="page-subtitle">Get in touch</p>
     </section>
 
     <section class="contact-section">
       <div class="container">
         <div class="contact-grid">
           <div class="contact-info">
-            <h2 class="section-title">Información</h2>
+            <h2 class="section-title">Information</h2>
             
             <div class="info-items">
               <div v-for="info in contactInfo" :key="info.label" class="info-item">
@@ -56,7 +56,7 @@ const socialLinks = [
             </div>
 
             <div class="social-section">
-              <h3>Síguenos</h3>
+              <h3>Follow Us</h3>
               <div class="social-links">
                 <a v-for="social in socialLinks" :key="social.name" :href="social.url" class="social-link">
                   {{ social.icon }}
@@ -66,11 +66,11 @@ const socialLinks = [
           </div>
 
           <div class="contact-form-wrapper">
-            <h2 class="section-title">Mensaje</h2>
+            <h2 class="section-title">Message</h2>
             
             <form v-if="!submitted" @submit.prevent="submitForm" class="contact-form">
               <div class="form-group">
-                <label for="name">Nombre</label>
+                <label for="name">Name</label>
                 <input v-model="form.name" type="text" id="name" required />
               </div>
               
@@ -80,28 +80,28 @@ const socialLinks = [
               </div>
               
               <div class="form-group">
-                <label for="subject">Asunto</label>
+                <label for="subject">Subject</label>
                 <select v-model="form.subject" id="subject" required>
-                  <option value="">Selecciona...</option>
+                  <option value="">Select...</option>
                   <option value="booking">Booking</option>
-                  <option value="prensa">Prensa</option>
-                  <option value="colaboracion">Colaboración</option>
-                  <option value="otro">Otro</option>
+                  <option value="press">Press</option>
+                  <option value="collaboration">Collaboration</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               
               <div class="form-group">
-                <label for="message">Mensaje</label>
+                <label for="message">Message</label>
                 <textarea v-model="form.message" id="message" rows="5" required></textarea>
               </div>
               
-              <button type="submit" class="btn btn-primary">Enviar</button>
+              <button type="submit" class="btn btn-primary">Send</button>
             </form>
 
             <div v-else class="success-message">
               <span class="success-icon">✓</span>
-              <h3>¡Mensaje Enviado!</h3>
-              <p>Gracias por contactar con nosotros. Te responderemos pronto.</p>
+              <h3>Message Sent!</h3>
+              <p>Thank you for contacting us. We'll get back to you soon.</p>
             </div>
           </div>
         </div>

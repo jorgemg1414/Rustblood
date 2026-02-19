@@ -9,12 +9,12 @@ import logo from '../assets/logo.png'
       <img :src="logo" alt="Rustblood" class="logo-img" />
     </RouterLink>
     <nav class="nav">
-      <RouterLink to="/" class="nav-link">Inicio</RouterLink>
-      <RouterLink to="/musica" class="nav-link">Música</RouterLink>
-      <RouterLink to="/galeria" class="nav-link">Galería</RouterLink>
-      <RouterLink to="/miembros" class="nav-link">Miembros</RouterLink>
-      <RouterLink to="/eventos" class="nav-link">Eventos</RouterLink>
-      <RouterLink to="/contacto" class="nav-link">Contacto</RouterLink>
+      <RouterLink to="/" class="nav-link">Home</RouterLink>
+      <RouterLink to="/musica" class="nav-link">Music</RouterLink>
+      <RouterLink to="/galeria" class="nav-link">Gallery</RouterLink>
+      <RouterLink to="/miembros" class="nav-link">Members</RouterLink>
+      <RouterLink to="/eventos" class="nav-link">Events</RouterLink>
+      <RouterLink to="/contacto" class="nav-link">Contact</RouterLink>
     </nav>
   </header>
 </template>

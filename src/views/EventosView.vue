@@ -1,5 +1,5 @@
 <script setup lang="ts">
-interface TourDate {
+import interface TourDate {
   date: string
   day: string
   month: string
@@ -23,13 +23,13 @@ const pastEvents = [
 <template>
   <div class="eventos">
     <section class="page-header">
-      <h1 class="page-title">Eventos</h1>
+      <h1 class="page-title">Events</h1>
       <p class="page-subtitle">2026</p>
     </section>
 
     <section class="tour-section">
       <div class="container">
-        <h2 class="section-title">Próximos Shows</h2>
+        <h2 class="section-title">Upcoming Shows</h2>
         <div class="tour-list">
           <div v-for="show in tourDates" :key="show.date + show.city" class="tour-item">
             <div class="tour-date-box">
@@ -41,8 +41,8 @@ const pastEvents = [
               <span class="tour-city">{{ show.city }}</span>
               <span class="tour-venue">{{ show.venue }}</span>
             </div>
-            <a v-if="!show.soldOut" :href="show.ticketUrl" class="btn btn-ticket">Entradas</a>
-            <span v-else class="sold-out">Agotado</span>
+            <a v-if="!show.soldOut" :href="show.ticketUrl" class="btn btn-ticket">Tickets</a>
+            <span v-else class="sold-out">Sold Out</span>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@ const pastEvents = [
 
     <section class="past-section">
       <div class="container">
-        <h2 class="section-title">Eventos Pasados</h2>
+        <h2 class="section-title">Past Events</h2>
         <div class="past-list">
           <div v-for="event in pastEvents" :key="event.date + event.city" class="past-item">
             <span class="past-date">{{ event.date }}</span>

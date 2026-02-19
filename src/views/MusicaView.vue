@@ -12,7 +12,7 @@ const albums: Album[] = [
     title: 'Rust & Bone', 
     year: 2025, 
     cover: '🔥',
-    description: 'Nuestro tercer álbum, una exploración profunda de la resistencia humana.',
+    description: 'Our third album, a deep exploration of human resilience.',
     tracks: ['Dissolution Beyond', 'In a crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied']
   },
 ]
@@ -28,8 +28,8 @@ const socialLinks = [
 <template>
   <div class="musica">
     <section class="page-header">
-      <h1 class="page-title">Música</h1>
-      <p class="page-subtitle">Nuestra discografía</p>
+      <h1 class="page-title">Music</h1>
+      <p class="page-subtitle">Our discography</p>
     </section>
 
     <section class="albums-section">

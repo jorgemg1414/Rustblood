@@ -11,17 +11,17 @@ interface Member {
 }
 
 const members: Member[] = [
-  { name: 'Edson Muñoz', instrument: 'Guitarra y Voz', photo: edson },
-  { name: 'Joshua Giacomo', instrument: 'Guitarra', photo: joshua },
-  { name: 'Lemmy Yeudhiel', instrument: 'Bajo', photo: lemmy },
-  { name: 'Alan Gómez', instrument: 'Batería', photo: alan }
+  { name: 'Edson Muñoz', instrument: 'Guitar & Vocals', photo: edson },
+  { name: 'Joshua Giacomo', instrument: 'Guitar', photo: joshua },
+  { name: 'Lemmy Yeudhiel', instrument: 'Bass', photo: lemmy },
+  { name: 'Alan Gómez', instrument: 'Drums', photo: alan }
 ]
 </script>
 
 <template>
   <div class="miembros">
     <div class="container">
-      <h1 class="title">Miembros</h1>
+      <h1 class="title">Members</h1>
       
       <div class="members-grid">
         <div 
