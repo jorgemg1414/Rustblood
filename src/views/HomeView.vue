@@ -2,6 +2,7 @@
 import { RouterLink } from 'vue-router'
 import logo from '../assets/logo.png'
 import rtscene from '../assets/rtscene.jpg'
+import albumCover from '../assets/album.jpg'
 </script>
 
 <template>
@@ -36,7 +37,7 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
       <div class="container">
         <h2 class="section-title">Latest Release</h2>
         <div class="featured-album">
-          <div class="album-cover">🔥</div>
+          <img :src="albumCover" alt="Rust & Bone" class="album-cover" />
           <div class="album-info">
             <h3>Rust & Bone</h3>
             <p>2025</p>
@@ -261,10 +262,13 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 }
 
 .album-cover {
-  font-size: 8rem;
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
   filter: grayscale(0.5);
   transition: transform 0.5s ease, filter 0.5s ease;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .album-cover:hover {

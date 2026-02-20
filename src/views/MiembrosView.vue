@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import lemmy from '../assets/members/lemmy.jpg'
 import alan from '../assets/members/alan.jpg'
 import joshua from '../assets/members/joshua.jpg'
 import edson from '../assets/members/edson.jpg'
+import exMember from '../assets/members/exmiembro.jpg'
 
 interface Member {
   name: string
   instrument: string
   photo: string
+  isFormer?: boolean
 }
 
 const members: Member[] = [
@@ -16,6 +19,16 @@ const members: Member[] = [
   { name: 'Lemmy Yeudhiel', instrument: 'Bass', photo: lemmy },
   { name: 'Alan Gómez', instrument: 'Drums', photo: alan }
 ]
+
+const showFormerMember = ref(false)
+
+onMounted(() => {
+  const isFormer = localStorage.getItem('showFormerMember')
+  if (isFormer === 'true') {
+    showFormerMember.value = true
+    localStorage.removeItem('showFormerMember')
+  }
+})
 </script>
 
 <template>
@@ -34,6 +47,19 @@ const members: Member[] = [
           </div>
           <h2 class="member-name">{{ member.name }}</h2>
           <p class="member-instrument">{{ member.instrument }}</p>
+        </div>
+      </div>
+
+      <div v-if="showFormerMember" class="former-section">
+        <h2 class="section-title">Former Members</h2>
+        <div class="members-grid">
+          <div class="member-card former-member">
+            <div class="photo-wrapper">
+              <img :src="exMember" alt="Jorge Martín" class="member-photo" />
+            </div>
+            <h2 class="member-name">Jorge Martín</h2>
+            <p class="member-instrument">Guitar</p>
+          </div>
         </div>
       </div>
     </div>
@@ -60,6 +86,23 @@ const members: Member[] = [
   color: #c44536;
   text-align: center;
   margin: 0 0 3rem;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 0.15em;
+  color: #666;
+  text-align: center;
+  margin: 4rem 0 2rem;
+}
+
+.former-member {
+  opacity: 0.7;
+}
+
+.former-member .member-photo {
+  filter: grayscale(100%);
 }
 
 .members-grid {

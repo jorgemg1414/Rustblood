@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import interface TourDate {
+interface TourDate {
   date: string
   day: string
   month: string

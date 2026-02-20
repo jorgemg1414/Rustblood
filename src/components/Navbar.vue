@@ -1,6 +1,17 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import logo from '../assets/logo.png'
+
+const membersClickCount = ref(0)
+
+const handleMembersClick = () => {
+  membersClickCount.value++
+  if (membersClickCount.value >= 5) {
+    localStorage.setItem('showFormerMember', 'true')
+    membersClickCount.value = 0
+  }
+}
 </script>
 
 <template>
@@ -12,7 +23,7 @@ import logo from '../assets/logo.png'
       <RouterLink to="/" class="nav-link">Home</RouterLink>
       <RouterLink to="/musica" class="nav-link">Music</RouterLink>
       <RouterLink to="/galeria" class="nav-link">Gallery</RouterLink>
-      <RouterLink to="/miembros" class="nav-link">Members</RouterLink>
+      <RouterLink to="/miembros" class="nav-link" @click="handleMembersClick">Members</RouterLink>
       <RouterLink to="/eventos" class="nav-link">Events</RouterLink>
       <RouterLink to="/contacto" class="nav-link">Contact</RouterLink>
     </nav>

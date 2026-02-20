@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import albumCover from '../assets/album.jpg'
+
 interface Album {
   title: string
   year: number
@@ -11,8 +13,8 @@ const albums: Album[] = [
   { 
     title: 'Rust & Bone', 
     year: 2025, 
-    cover: '🔥',
-    description: 'Our third album, a deep exploration of human resilience.',
+    cover: albumCover,
+    description: 'Our first album, a deep exploration of human resilience.',
     tracks: ['Dissolution Beyond', 'In a crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied']
   },
 ]
@@ -35,7 +37,7 @@ const socialLinks = [
     <section class="albums-section">
       <div class="container">
         <div v-for="album in albums" :key="album.title" class="album-card">
-          <div class="album-cover">{{ album.cover }}</div>
+          <img :src="album.cover" alt="Album cover" class="album-cover" />
           <div class="album-content">
             <h2 class="album-title">{{ album.title }}</h2>
             <span class="album-year">{{ album.year }}</span>
@@ -112,10 +114,13 @@ const socialLinks = [
 }
 
 .album-cover {
-  font-size: 5rem;
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
   flex-shrink: 0;
   filter: grayscale(0.5);
   transition: filter 0.3s ease;
+  border-radius: 4px;
 }
 
 .album-card:hover .album-cover {
