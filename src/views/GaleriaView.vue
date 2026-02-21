@@ -35,14 +35,35 @@ const closeLightbox = () => {
 
 onMounted(() => {
   fetchPhotos()
+  
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed')
+        }
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+
+  setTimeout(() => {
+    document.querySelectorAll('.gallery-item').forEach((el, i) => {
+      el.classList.add('reveal')
+      el.classList.add(`reveal-delay-${(i % 4) + 1}`)
+      observer.observe(el)
+    })
+  }, 100)
 })
 </script>
 
 <template>
   <div class="galeria">
     <div class="container">
-      <h1 class="title">Gallery</h1>
-      <p class="subtitle">Our concerts</p>
+      <h1 class="title reveal">Gallery</h1>
+      <p class="subtitle reveal reveal-delay-1">Our concerts</p>
       
       <div v-if="loading" class="loading">Loading...</div>
       
@@ -91,6 +112,7 @@ onMounted(() => {
   color: #c44536;
   text-align: center;
   margin: 0;
+  padding-top: 80px;
 }
 
 .subtitle {
@@ -127,6 +149,20 @@ onMounted(() => {
   border-radius: 4px;
 }
 
+.gallery-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, rgba(196,69,54,0.3) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.gallery-item:hover::before {
+  opacity: 1;
+}
+
 .gallery-item img {
   width: 100%;
   height: 100%;
@@ -135,7 +171,7 @@ onMounted(() => {
 }
 
 .gallery-item:hover img {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .lightbox {

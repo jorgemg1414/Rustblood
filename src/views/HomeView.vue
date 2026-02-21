@@ -1,15 +1,49 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import logo from '../assets/logo.png'
 import rtscene from '../assets/rtscene.jpg'
 import albumCover from '../assets/album.jpg'
+
+const particles = ref<{ id: number; left: string; delay: string; size: string }[]>([])
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed')
+        }
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+
+  particles.value = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    delay: `${Math.random() * 5}s`,
+    size: `${Math.random() * 10 + 5}px`
+  }))
+})
 </script>
 
 <template>
   <div class="home">
     <section class="hero">
+      <div class="particles">
+        <div 
+          v-for="p in particles" 
+          :key="p.id" 
+          class="particle"
+          :style="{ left: p.left, animationDelay: p.delay, width: p.size, height: p.size }"
+        ></div>
+      </div>
       <div class="hero-content">
         <img :src="logo" alt="Rustblood" class="hero-logo" />
+        <p class="tagline demo-badge">PAGINA DEMO DE RUSTBLOOD (NO OFICIAL)</p>
         <p class="tagline">Born of Rust forged in Blood</p>
         <div class="hero-btns">
           <RouterLink to="/musica" class="btn btn-primary">Listen Now</RouterLink>
@@ -21,22 +55,22 @@ import albumCover from '../assets/album.jpg'
 
     <section class="about-preview">
       <div class="container">
-        <h2 class="section-title">About Us</h2>
-        <p>
+        <h2 class="section-title reveal">About Us</h2>
+        <p class="reveal reveal-delay-1">
           Formed in January 2024 in Tepatitlán de Morelos, in the Los Altos region of Jalisco, Mexico. Rustblood is a Mexican progressive death metal band seeking to carve new paths in traditional sonic brutality. The band's influences include Death, Gojira, Opeth, and Dream Theater, blending the crudeness of death metal with progressive elements and melodic passages.
 
 Their music is characterized by powerful riffs, non-linear structures, carefully crafted melodic passages, and intense execution both in the studio and live. Founded by bassist Lemmy Yeudhiel and drummer Alan Gómez, the current lineup also includes guitarist Joshua Giacomo and vocalist/guitarist Edson Muñoz.
 
 Their lyrical and musical approach addresses existential, philosophical, and psychological themes, exploring the collapse of the self, internal chaos, and freedom through pain. In a short time, Rustblood has presented six original songs: Hope Denied, Forged in Blood, In a Crypt, Hollow Throne, Dissolution Beyond, and Freedom of Die. They are currently composing new material to expand their sonic proposal.
         </p>
-        <RouterLink to="/contacto" class="btn btn-secondary">Contact Us</RouterLink>
+        <RouterLink to="/contacto" class="btn btn-secondary reveal reveal-delay-2">Contact Us</RouterLink>
       </div>
     </section>
 
     <section class="featured-music">
       <div class="container">
-        <h2 class="section-title">Latest Release</h2>
-        <div class="featured-album">
+        <h2 class="section-title reveal">Latest Release</h2>
+        <div class="featured-album reveal reveal-delay-1">
           <img :src="albumCover" alt="Rust & Bone" class="album-cover" />
           <div class="album-info">
             <h3>Rust & Bone</h3>
@@ -63,6 +97,31 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   justify-content: center;
   position: relative;
   overflow: hidden;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  bottom: -20px;
+  background: rgba(196, 69, 54, 0.6);
+  border-radius: 50%;
+  animation: rise 8s infinite ease-in;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) scale(0);
+    opacity: 0;
+  }
 }
 
 .hero-bg {
@@ -143,13 +202,19 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 
 .tagline {
   font-family: 'Oswald', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 300;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #666;
   margin: 1rem 0 3rem;
   animation: fadeInUp 1s ease-out 0.3s backwards;
+}
+
+.demo-badge {
+  font-size: 0.9rem;
+  color: #c44536;
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 .hero-btns {
@@ -187,6 +252,14 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
   transition: left 0.5s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05) translateY(-3px);
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .btn:hover::before {

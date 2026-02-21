@@ -28,19 +28,33 @@ onMounted(() => {
     showFormerMember.value = true
     localStorage.removeItem('showFormerMember')
   }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed')
+        }
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
 })
 </script>
 
 <template>
   <div class="miembros">
     <div class="container">
-      <h1 class="title">Members</h1>
+      <h1 class="title reveal">Members</h1>
       
       <div class="members-grid">
         <div 
           v-for="(member, index) in members" 
           :key="index" 
-          class="member-card"
+          class="member-card reveal"
+          :class="`reveal-delay-${index + 1}`"
         >
           <div class="photo-wrapper">
             <img :src="member.photo" :alt="member.name" class="member-photo" />
@@ -51,9 +65,9 @@ onMounted(() => {
       </div>
 
       <div v-if="showFormerMember" class="former-section">
-        <h2 class="section-title">Former Members</h2>
+        <h2 class="section-title reveal">Former Members</h2>
         <div class="members-grid">
-          <div class="member-card former-member">
+          <div class="member-card former-member reveal">
             <div class="photo-wrapper">
               <img :src="exMember" alt="Jorge Martín" class="member-photo" />
             </div>
@@ -115,6 +129,12 @@ onMounted(() => {
 .member-card {
   text-align: center;
   max-width: 300px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(196, 69, 54, 0.2);
 }
 
 .photo-wrapper {

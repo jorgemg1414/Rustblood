@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import albumCover from '../assets/album.jpg'
 
 interface Album {
@@ -25,18 +26,33 @@ const socialLinks = [
   { name: 'YouTube', url: 'https://www.youtube.com/@Rustblood_band', icon: '▶️' },
   { name: 'Bandcamp', url: '#', icon: '🎸' }
 ]
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed')
+        }
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+})
 </script>
 
 <template>
   <div class="musica">
     <section class="page-header">
-      <h1 class="page-title">Music</h1>
-      <p class="page-subtitle">Our discography</p>
+      <h1 class="page-title reveal">Music</h1>
+      <p class="page-subtitle reveal reveal-delay-1">Our discography</p>
     </section>
 
     <section class="albums-section">
       <div class="container">
-        <div v-for="album in albums" :key="album.title" class="album-card">
+        <div v-for="album in albums" :key="album.title" class="album-card reveal reveal-delay-2">
           <img :src="album.cover" alt="Album cover" class="album-cover" />
           <div class="album-content">
             <h2 class="album-title">{{ album.title }}</h2>
@@ -106,11 +122,13 @@ const socialLinks = [
   border: 1px solid #222;
   margin-bottom: 3rem;
   padding: 2rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .album-card:hover {
   border-color: #c44536;
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(196, 69, 54, 0.2);
 }
 
 .album-cover {

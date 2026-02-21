@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
 interface TourDate {
   date: string
   day: string
@@ -18,20 +20,35 @@ const pastEvents = [
   { date: '10 ENE', city: 'Zaragoza, ES', venue: 'La Lata' },
   { date: '28 DIC', city: 'Vigo, ES', venue: 'Club Oui' },
 ]
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed')
+        }
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+})
 </script>
 
 <template>
   <div class="eventos">
     <section class="page-header">
-      <h1 class="page-title">Events</h1>
-      <p class="page-subtitle">2026</p>
+      <h1 class="page-title reveal">Events</h1>
+      <p class="page-subtitle reveal reveal-delay-1">2026</p>
     </section>
 
     <section class="tour-section">
       <div class="container">
-        <h2 class="section-title">Upcoming Shows</h2>
+        <h2 class="section-title reveal">Upcoming Shows</h2>
         <div class="tour-list">
-          <div v-for="show in tourDates" :key="show.date + show.city" class="tour-item">
+          <div v-for="(show, index) in tourDates" :key="show.date + show.city" class="tour-item reveal" :class="`reveal-delay-${index + 1}`">
             <div class="tour-date-box">
               <span class="date-num">{{ show.date }}</span>
               <span class="date-month">{{ show.month }}</span>

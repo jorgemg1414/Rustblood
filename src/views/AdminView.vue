@@ -16,7 +16,7 @@ const gallery = ref<GalleryItem[]>([])
 const uploading = ref(false)
 const newTitle = ref('')
 
-const ADMIN_PASSWORD = 'dr3am3d41em_0564'
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASS || 'rustblood2026'
 
 const login = () => {
   if (password.value === ADMIN_PASSWORD) {
