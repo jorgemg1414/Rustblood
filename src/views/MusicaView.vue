@@ -20,6 +20,10 @@ const albums: Album[] = [
   },
 ]
 
+const videos = [
+  { id: 'cSLdIj_iwgI', title: 'RustBlood - Freedom of Die (Hoka Hey 2025)' },
+]
+
 const socialLinks = [
   { name: 'Spotify', url: '#', icon: '🎵' },
   { name: 'Apple Music', url: '#', icon: '🎧' },
@@ -72,6 +76,23 @@ onMounted(() => {
                 {{ social.icon }} {{ social.name }}
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="videos-section">
+      <div class="container">
+        <h2 class="section-title reveal">Videos</h2>
+        <div class="videos-grid">
+          <div v-for="video in videos" :key="video.id" class="video-card reveal reveal-delay-1">
+            <iframe 
+              :src="`https://www.youtube.com/embed/${video.id}`" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen
+            ></iframe>
+            <p class="video-title">{{ video.title }}</p>
           </div>
         </div>
       </div>
@@ -219,6 +240,45 @@ onMounted(() => {
 .social-btn:hover {
   border-color: #c44536;
   color: #c44536;
+}
+
+.videos-section {
+  background: #0a0a0a;
+  padding: 4rem 0;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 0.15em;
+  color: #c44536;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+
+.video-card {
+  width: 100%;
+  max-width: 560px;
+}
+
+.video-card iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+}
+
+.video-title {
+  font-family: 'Oswald', sans-serif;
+  color: #888;
+  text-align: center;
+  margin-top: 1rem;
 }
 
 @media (max-width: 768px) {

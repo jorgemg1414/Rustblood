@@ -22,6 +22,7 @@ const handleMembersClick = () => {
     <nav class="nav">
       <RouterLink to="/" class="nav-link">Home</RouterLink>
       <RouterLink to="/musica" class="nav-link">Music</RouterLink>
+      <RouterLink to="/blog" class="nav-link">News</RouterLink>
       <RouterLink to="/galeria" class="nav-link">Gallery</RouterLink>
       <RouterLink to="/miembros" class="nav-link" @click="handleMembersClick">Members</RouterLink>
       <RouterLink to="/eventos" class="nav-link">Events</RouterLink>
