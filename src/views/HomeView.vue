@@ -43,7 +43,7 @@ onMounted(() => {
       </div>
       <div class="hero-content">
         <img :src="logo" alt="Rustblood" class="hero-logo" />
-        <p class="tagline demo-badge">PAGINA DEMO DE RUSTBLOOD (NO OFICIAL)</p>
+        <p class="tagline demo-badge">PAGINA DEMO (NO OFICIAL)</p>
         <p class="tagline">Born of Rust forged in Blood</p>
         <div class="hero-btns">
           <RouterLink to="/musica" class="btn btn-primary">Listen Now</RouterLink>
