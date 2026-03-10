@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
-import { messageSchema } from './validation.js'
+import { gallerySchema } from './validation.js'
+import { authenticateAdmin } from './middleware/auth.js'
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -22,21 +23,8 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      // Solo para admin
-      const authHeader = req.headers.authorization
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ error: 'No token provided' })
-      }
-
-      const token = authHeader.split(' ')[1]
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-      
-      if (authError || !user) {
-        return res.status(401).json({ error: 'Invalid token' })
-      }
-
       const { data, error } = await supabase
-        .from('messages')
+        .from('gallery')
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -45,17 +33,29 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
+      try {
+        await authenticateAdmin(req)
+      } catch (authError) {
+        if (authError.message === 'No token provided') {
+          return res.status(401).json({ error: 'No token provided' })
+        } else if (authError.message === 'Invalid token') {
+          return res.status(401).json({ error: 'Invalid token' })
+        } else {
+          return res.status(403).json({ error: authError.message })
+        }
+      }
+      
       // Validar entrada
-      const validation = messageSchema.safeParse(req.body)
+      const validation = gallerySchema.safeParse(req.body)
       if (!validation.success) {
         return res.status(400).json({ error: validation.error.errors[0].message })
       }
 
-      const { name, email, subject, message } = validation.data
+      const { title, image_url } = validation.data
 
       const { data, error } = await supabase
-        .from('messages')
-        .insert({ name, email, subject, message })
+        .from('gallery')
+        .insert({ title: title || 'Concert', image_url })
         .select()
         .single()
 
@@ -64,28 +64,27 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      // Validar autenticación
-      const authHeader = req.headers.authorization
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ error: 'No token provided' })
-      }
-
-      const token = authHeader.split(' ')[1]
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-      
-      if (authError || !user) {
-        return res.status(401).json({ error: 'Invalid token' })
+      try {
+        await authenticateAdmin(req)
+      } catch (authError) {
+        if (authError.message === 'No token provided') {
+          return res.status(401).json({ error: 'No token provided' })
+        } else if (authError.message === 'Invalid token') {
+          return res.status(401).json({ error: 'Invalid token' })
+        } else {
+          return res.status(403).json({ error: authError.message })
+        }
       }
 
       const { id } = req.query
 
       const { error } = await supabase
-        .from('messages')
+        .from('gallery')
         .delete()
         .eq('id', parseInt(id))
 
       if (error) throw error
-      return res.status(200).json({ message: 'Message deleted successfully' })
+      return res.status(200).json({ message: 'Photo deleted successfully' })
     }
 
     return res.status(405).json({ error: 'Method not allowed' })
