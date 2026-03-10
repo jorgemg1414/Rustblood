@@ -2,7 +2,51 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vue",
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/gallery",
+      "dest": "/api/gallery.js"
+    },
+    {
+      "src": "/api/gallery/:id",
+      "dest": "/api/gallery.js"
+    },
+    {
+      "src": "/api/posts",
+      "dest": "/api/posts.js"
+    },
+    {
+      "src": "/api/posts/:id",
+      "dest": "/api/posts.js"
+    },
+    {
+      "src": "/api/messages",
+      "dest": "/api/messages.js"
+    },
+    {
+      "src": "/api/messages/:id",
+      "dest": "/api/messages.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/$1"
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "env": {
+    "SUPABASE_URL": "@supabase-url",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key"
+  }
 }

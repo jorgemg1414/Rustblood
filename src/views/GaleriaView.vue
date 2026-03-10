@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { supabase } from '../supabase'
+import { galleryApi } from '../api'
 
 interface Photo {
   id: number
@@ -14,13 +14,10 @@ const loading = ref(true)
 
 const fetchPhotos = async () => {
   loading.value = true
-  const { data, error } = await supabase
-    .from('gallery')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (!error && data) {
-    photos.value = data
+  try {
+    photos.value = await galleryApi.getAll()
+  } catch (error) {
+    console.error('Error fetching photos:', error)
   }
   loading.value = false
 }

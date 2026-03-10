@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
+import { galleryApi, postsApi, messagesApi } from '../api'
 import type { Session } from '@supabase/supabase-js'
 
 interface GalleryItem {
@@ -18,6 +19,15 @@ interface Post {
   created_at: string
 }
 
+interface Message {
+  id: number
+  name: string
+  email: string
+  subject: string
+  message: string
+  created_at: string
+}
+
 const session = ref<Session | null>(null)
 const loading = ref(true)
 const activeTab = ref('gallery')
@@ -27,6 +37,7 @@ const error = ref('')
 
 const gallery = ref<GalleryItem[]>([])
 const posts = ref<Post[]>([])
+const messages = ref<Message[]>([])
 const uploading = ref(false)
 const newTitle = ref('')
 const newContent = ref('')
@@ -58,24 +69,18 @@ const signOut = async () => {
 }
 
 const fetchGallery = async () => {
-  const { data, error: err } = await supabase
-    .from('gallery')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (!err && data) {
-    gallery.value = data
+  try {
+    gallery.value = await galleryApi.getAll()
+  } catch (e: any) {
+    console.error('Error fetching gallery:', e)
   }
 }
 
 const fetchPosts = async () => {
-  const { data, error: err } = await supabase
-    .from('posts')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (!err && data) {
-    posts.value = data
+  try {
+    posts.value = await postsApi.getAll()
+  } catch (e: any) {
+    console.error('Error fetching posts:', e)
   }
 }
 
@@ -102,11 +107,7 @@ const uploadPhoto = async (event: Event) => {
       .from('gallery')
       .getPublicUrl(fileName)
 
-    const { error: insertError } = await supabase
-      .from('gallery')
-      .insert({ title: newTitle.value || 'Concert', image_url: publicUrl })
-
-    if (insertError) throw insertError
+    await galleryApi.create({ title: newTitle.value || 'Concert', image_url: publicUrl })
 
     newTitle.value = ''
     input.value = ''
@@ -121,13 +122,11 @@ const uploadPhoto = async (event: Event) => {
 const deletePhoto = async (id: number) => {
   if (!confirm('Delete this photo?')) return
 
-  const { error: deleteError } = await supabase
-    .from('gallery')
-    .delete()
-    .eq('id', id)
-
-  if (!deleteError) {
+  try {
+    await galleryApi.delete(id)
     await fetchGallery()
+  } catch (e: any) {
+    error.value = e.message
   }
 }
 
@@ -154,11 +153,11 @@ const uploadPost = async (event: Event) => {
       .from('gallery')
       .getPublicUrl(fileName)
 
-    const { error: insertError } = await supabase
-      .from('posts')
-      .insert({ title: newTitle.value, content: newContent.value, image_url: publicUrl })
-
-    if (insertError) throw insertError
+    await postsApi.create({ 
+      title: newTitle.value, 
+      content: newContent.value, 
+      image_url: publicUrl 
+    })
 
     newTitle.value = ''
     newContent.value = ''
@@ -181,11 +180,10 @@ const createPost = async () => {
   error.value = ''
 
   try {
-    const { error: insertError } = await supabase
-      .from('posts')
-      .insert({ title: newTitle.value, content: newContent.value })
-
-    if (insertError) throw insertError
+    await postsApi.create({ 
+      title: newTitle.value, 
+      content: newContent.value 
+    })
 
     newTitle.value = ''
     newContent.value = ''
@@ -200,13 +198,30 @@ const createPost = async () => {
 const deletePost = async (id: number) => {
   if (!confirm('Delete this post?')) return
 
-  const { error: deleteError } = await supabase
-    .from('posts')
-    .delete()
-    .eq('id', id)
-
-  if (!deleteError) {
+  try {
+    await postsApi.delete(id)
     await fetchPosts()
+  } catch (e: any) {
+    error.value = e.message
+  }
+}
+
+const fetchMessages = async () => {
+  try {
+    messages.value = await messagesApi.getAll()
+  } catch (e: any) {
+    console.error('Error fetching messages:', e)
+  }
+}
+
+const deleteMessage = async (id: number) => {
+  if (!confirm('Delete this message?')) return
+
+  try {
+    await messagesApi.delete(id)
+    await fetchMessages()
+  } catch (e: any) {
+    error.value = e.message
   }
 }
 
@@ -215,6 +230,7 @@ onMounted(async () => {
   if (currentSession) {
     fetchGallery()
     fetchPosts()
+    fetchMessages()
   }
   loading.value = false
 })
@@ -266,6 +282,12 @@ onMounted(async () => {
           @click="activeTab = 'posts'"
         >
           News
+        </button>
+        <button 
+          :class="['tab', { active: activeTab === 'messages' }]" 
+          @click="activeTab = 'messages'"
+        >
+          Messages
         </button>
       </div>
 
@@ -337,6 +359,28 @@ onMounted(async () => {
               <p>{{ post.content.substring(0, 100) }}...</p>
             </div>
             <button @click="deletePost(post.id)" class="delete-btn">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Section -->
+      <div v-if="activeTab === 'messages'" class="tab-content">
+        <h2>Contact Messages</h2>
+        
+        <div v-if="messages.length === 0" class="empty">
+          <p>No messages yet.</p>
+        </div>
+        
+        <div v-else class="messages-list">
+          <div v-for="msg in messages" :key="msg.id" class="message-item">
+            <div class="message-header">
+              <span class="message-name">{{ msg.name }}</span>
+              <span class="message-email">{{ msg.email }}</span>
+              <span class="message-subject">{{ msg.subject }}</span>
+              <span class="message-date">{{ new Date(msg.created_at).toLocaleDateString() }}</span>
+            </div>
+            <p class="message-content">{{ msg.message }}</p>
+            <button @click="deleteMessage(msg.id)" class="delete-btn">Delete</button>
           </div>
         </div>
       </div>
@@ -612,5 +656,64 @@ onMounted(async () => {
 .error {
   color: #c44536;
   margin-top: 1rem;
+}
+
+.tab-content h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: #e8e8e8;
+  margin-bottom: 2rem;
+}
+
+.empty {
+  text-align: center;
+  color: #666;
+  font-family: 'Oswald', sans-serif;
+  padding: 2rem;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.message-item {
+  background: #111;
+  border: 1px solid #222;
+  padding: 1.5rem;
+}
+
+.message-header {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+}
+
+.message-name {
+  color: #c44536;
+  font-weight: 600;
+}
+
+.message-email {
+  color: #888;
+}
+
+.message-subject {
+  color: #e8e8e8;
+}
+
+.message-date {
+  color: #666;
+  margin-left: auto;
+}
+
+.message-content {
+  color: #aaa;
+  font-family: 'Oswald', sans-serif;
+  line-height: 1.6;
+  margin: 0 0 1rem;
 }
 </style>

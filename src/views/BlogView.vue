@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { supabase } from '../supabase'
+import { postsApi } from '../api'
 
 interface Post {
   id: number
@@ -18,16 +18,10 @@ const fetchPosts = async () => {
   loading.value = true
   errorMsg.value = ''
   
-  const { data, error } = await supabase
-    .from('posts')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (error) {
-    errorMsg.value = error.message
-  }
-  if (data) {
-    posts.value = data
+  try {
+    posts.value = await postsApi.getAll()
+  } catch (e: any) {
+    errorMsg.value = e.message
   }
   loading.value = false
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { messagesApi } from '../api'
 
 const form = ref({
   name: '',
@@ -9,14 +10,31 @@ const form = ref({
 })
 
 const submitted = ref(false)
+const loading = ref(false)
+const error = ref('')
 
-const submitForm = () => {
-  console.log('Form submitted:', form.value)
-  submitted.value = true
-  form.value = { name: '', email: '', subject: '', message: '' }
-  setTimeout(() => {
-    submitted.value = false
-  }, 5000)
+const submitForm = async () => {
+  loading.value = true
+  error.value = ''
+  
+  try {
+    await messagesApi.create({
+      name: form.value.name,
+      email: form.value.email,
+      subject: form.value.subject,
+      message: form.value.message
+    })
+    
+    submitted.value = true
+    form.value = { name: '', email: '', subject: '', message: '' }
+    setTimeout(() => {
+      submitted.value = false
+    }, 5000)
+  } catch (e: any) {
+    error.value = e.message
+  } finally {
+    loading.value = false
+  }
 }
 
 const contactInfo = [
@@ -95,7 +113,11 @@ const socialLinks = [
                 <textarea v-model="form.message" id="message" rows="5" required></textarea>
               </div>
               
-              <button type="submit" class="btn btn-primary">Send</button>
+              <p v-if="error" class="error">{{ error }}</p>
+              
+              <button type="submit" class="btn btn-primary" :disabled="loading">
+                {{ loading ? 'Sending...' : 'Send' }}
+              </button>
             </form>
 
             <div v-else class="success-message">
@@ -324,6 +346,17 @@ const socialLinks = [
 .success-message p {
   font-family: 'Oswald', sans-serif;
   color: #666;
+}
+
+.error {
+  color: #c44536;
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 1rem;
+}
+
+.btn:disabled {
+  background: #666;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
