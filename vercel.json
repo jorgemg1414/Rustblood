@@ -2,11 +2,7 @@
   "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist",
   "framework": "vue",
-  "functions": {
-    "backend/api/**/*.js": {
-      "runtime": "@vercel/node@2"
-    }
-  },
+
   "routes": [
     { "src": "/api/gallery", "dest": "/backend/api/gallery.js" },
     { "src": "/api/gallery/:id", "dest": "/backend/api/gallery.js" },
