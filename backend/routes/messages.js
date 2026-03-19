@@ -1,11 +1,10 @@
 import { Router } from 'express'
 import { supabase } from '../config/supabase.js'
-import { authenticateAdmin, authenticatePublic } from '../middleware/auth.js'
+import { authenticateAdmin } from '../middleware/auth.js'
 import { messageSchema, validate } from '../middleware/validation.js'
 
 const router = Router()
 
-// Obtener todos los mensajes (solo admin)
 router.get('/', authenticateAdmin, async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -20,8 +19,7 @@ router.get('/', authenticateAdmin, async (req, res) => {
   }
 })
 
-// Crear mensaje (público)
-router.post('/', authenticatePublic, validate(messageSchema), async (req, res) => {
+router.post('/', validate(messageSchema), async (req, res) => {
   try {
     const { name, email, subject, message } = req.body
 
@@ -38,10 +36,10 @@ router.post('/', authenticatePublic, validate(messageSchema), async (req, res) =
   }
 })
 
-// Eliminar mensaje (admin)
-router.delete('/:id', authenticateAdmin, async (req, res) => {
+router.delete('/', authenticateAdmin, async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.query
+    if (!id) return res.status(400).json({ error: 'ID is required' })
 
     const { error } = await supabase
       .from('messages')

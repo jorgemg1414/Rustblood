@@ -1,12 +1,11 @@
 import { Router } from 'express'
 import { supabase } from '../config/supabase.js'
-import { authenticateAdmin, authenticatePublic } from '../middleware/auth.js'
+import { authenticateAdmin } from '../middleware/auth.js'
 import { gallerySchema, validate } from '../middleware/validation.js'
 
 const router = Router()
 
-// Obtener todas las fotos (público)
-router.get('/', authenticatePublic, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('gallery')
@@ -20,7 +19,6 @@ router.get('/', authenticatePublic, async (req, res) => {
   }
 })
 
-// Agregar foto (admin)
 router.post('/', authenticateAdmin, validate(gallerySchema), async (req, res) => {
   try {
     const { title, image_url } = req.body
@@ -38,10 +36,35 @@ router.post('/', authenticateAdmin, validate(gallerySchema), async (req, res) =>
   }
 })
 
-// Eliminar foto (admin)
-router.delete('/:id', authenticateAdmin, async (req, res) => {
+router.put('/', authenticateAdmin, async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.query
+    if (!id) return res.status(400).json({ error: 'ID is required' })
+
+    const validation = gallerySchema.partial().safeParse(req.body)
+
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error.errors[0].message })
+    }
+
+    const { data, error } = await supabase
+      .from('gallery')
+      .update(validation.data)
+      .eq('id', parseInt(id))
+      .select()
+      .single()
+
+    if (error) throw error
+    res.json(data)
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+router.delete('/', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.query
+    if (!id) return res.status(400).json({ error: 'ID is required' })
 
     const { error } = await supabase
       .from('gallery')

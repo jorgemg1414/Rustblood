@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { supabase } from '../supabase'
+import { useAuth } from '../composables/useAuth'
 import { galleryApi, postsApi, messagesApi } from '../api'
-import type { Session } from '@supabase/supabase-js'
 
 interface GalleryItem {
   id: number
@@ -28,44 +27,51 @@ interface Message {
   created_at: string
 }
 
-const session = ref<Session | null>(null)
-const loading = ref(true)
+const { isAuthenticated, loading: authLoading, signIn, signOut } = useAuth()
+
 const activeTab = ref('gallery')
 const email = ref('')
 const password = ref('')
 const error = ref('')
+const success = ref('')
 
 const gallery = ref<GalleryItem[]>([])
 const posts = ref<Post[]>([])
 const messages = ref<Message[]>([])
 const uploading = ref(false)
+const loading = ref(false)
 const newTitle = ref('')
 const newContent = ref('')
 
-supabase.auth.onAuthStateChange((_event, _session) => {
-  session.value = _session
-})
-
-const signIn = async () => {
+const handleSignIn = async () => {
+  error.value = ''
+  success.value = ''
   try {
-    error.value = ''
-    const { data, error: err } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value
-    })
-    
-    if (err) throw err
-    if (data.user) {
-      fetchGallery()
-      fetchPosts()
-    }
+    await signIn(email.value, password.value)
+    email.value = ''
+    password.value = ''
+    await loadAllData()
   } catch (e: any) {
-    error.value = e.message
+    error.value = e.message || 'Login failed'
   }
 }
 
-const signOut = async () => {
-  await supabase.auth.signOut()
+const handleSignOut = async () => {
+  await signOut()
+  gallery.value = []
+  posts.value = []
+  messages.value = []
+}
+
+const loadAllData = async () => {
+  loading.value = true
+  try {
+    await Promise.all([fetchGallery(), fetchPosts(), fetchMessages()])
+  } catch (e) {
+    console.error('Error loading data:', e)
+  } finally {
+    loading.value = false
+  }
 }
 
 const fetchGallery = async () => {
@@ -84,19 +90,28 @@ const fetchPosts = async () => {
   }
 }
 
+const fetchMessages = async () => {
+  try {
+    messages.value = await messagesApi.getAll()
+  } catch (e: any) {
+    console.error('Error fetching messages:', e)
+  }
+}
+
 const uploadPhoto = async (event: Event) => {
   const input = event.target as HTMLInputElement
   if (!input.files?.length) return
 
   const file = input.files[0]
   if (!file) return
-  
+
   uploading.value = true
   error.value = ''
 
   try {
+    const { supabase } = await import('../supabase')
     const fileName = `${Date.now()}-${file.name}`
-    
+
     const { error: uploadError } = await supabase.storage
       .from('gallery')
       .upload(fileName, file)
@@ -111,6 +126,7 @@ const uploadPhoto = async (event: Event) => {
 
     newTitle.value = ''
     input.value = ''
+    success.value = 'Photo uploaded successfully'
     await fetchGallery()
   } catch (e: any) {
     error.value = e.message
@@ -121,9 +137,11 @@ const uploadPhoto = async (event: Event) => {
 
 const deletePhoto = async (id: number) => {
   if (!confirm('Delete this photo?')) return
+  error.value = ''
 
   try {
     await galleryApi.delete(id)
+    success.value = 'Photo deleted'
     await fetchGallery()
   } catch (e: any) {
     error.value = e.message
@@ -136,13 +154,14 @@ const uploadPost = async (event: Event) => {
 
   const file = input.files[0]
   if (!file) return
-  
+
   uploading.value = true
   error.value = ''
 
   try {
+    const { supabase } = await import('../supabase')
     const fileName = `${Date.now()}-${file.name}`
-    
+
     const { error: uploadError } = await supabase.storage
       .from('gallery')
       .upload(fileName, file)
@@ -153,15 +172,16 @@ const uploadPost = async (event: Event) => {
       .from('gallery')
       .getPublicUrl(fileName)
 
-    await postsApi.create({ 
-      title: newTitle.value, 
-      content: newContent.value, 
-      image_url: publicUrl 
+    await postsApi.create({
+      title: newTitle.value,
+      content: newContent.value,
+      image_url: publicUrl
     })
 
     newTitle.value = ''
     newContent.value = ''
     input.value = ''
+    success.value = 'Post created successfully'
     await fetchPosts()
   } catch (e: any) {
     error.value = e.message
@@ -175,18 +195,19 @@ const createPost = async () => {
     error.value = 'Title and content are required'
     return
   }
-  
+
   uploading.value = true
   error.value = ''
 
   try {
-    await postsApi.create({ 
-      title: newTitle.value, 
-      content: newContent.value 
+    await postsApi.create({
+      title: newTitle.value,
+      content: newContent.value
     })
 
     newTitle.value = ''
     newContent.value = ''
+    success.value = 'Post created successfully'
     await fetchPosts()
   } catch (e: any) {
     error.value = e.message
@@ -197,28 +218,24 @@ const createPost = async () => {
 
 const deletePost = async (id: number) => {
   if (!confirm('Delete this post?')) return
+  error.value = ''
 
   try {
     await postsApi.delete(id)
+    success.value = 'Post deleted'
     await fetchPosts()
   } catch (e: any) {
     error.value = e.message
   }
 }
 
-const fetchMessages = async () => {
-  try {
-    messages.value = await messagesApi.getAll()
-  } catch (e: any) {
-    console.error('Error fetching messages:', e)
-  }
-}
-
 const deleteMessage = async (id: number) => {
   if (!confirm('Delete this message?')) return
+  error.value = ''
 
   try {
     await messagesApi.delete(id)
+    success.value = 'Message deleted'
     await fetchMessages()
   } catch (e: any) {
     error.value = e.message
@@ -226,35 +243,31 @@ const deleteMessage = async (id: number) => {
 }
 
 onMounted(async () => {
-  const { data: { session: currentSession } } = await supabase.auth.getSession()
-  if (currentSession) {
-    fetchGallery()
-    fetchPosts()
-    fetchMessages()
+  if (isAuthenticated.value) {
+    await loadAllData()
   }
-  loading.value = false
 })
 </script>
 
 <template>
   <div class="admin">
-    <div v-if="loading" class="loading-screen">
+    <div v-if="authLoading" class="loading-screen">
       <p>Loading...</p>
     </div>
 
-    <div v-else-if="!session" class="login-container">
+    <div v-else-if="!isAuthenticated" class="login-container">
       <h1>Admin Login</h1>
-      <form @submit.prevent="signIn" class="login-form">
-        <input 
-          v-model="email" 
-          type="email" 
+      <form @submit.prevent="handleSignIn" class="login-form">
+        <input
+          v-model="email"
+          type="email"
           placeholder="Admin email"
           class="login-input"
           required
         />
-        <input 
-          v-model="password" 
-          type="password" 
+        <input
+          v-model="password"
+          type="password"
           placeholder="Password"
           class="login-input"
           required
@@ -267,48 +280,59 @@ onMounted(async () => {
     <div v-else class="admin-panel">
       <div class="admin-header">
         <h1>Admin Panel</h1>
-        <button @click="signOut" class="logout-btn">Logout</button>
+        <button @click="handleSignOut" class="logout-btn">Logout</button>
       </div>
 
       <div class="tabs">
-        <button 
-          :class="['tab', { active: activeTab === 'gallery' }]" 
+        <button
+          :class="['tab', { active: activeTab === 'gallery' }]"
           @click="activeTab = 'gallery'"
         >
           Gallery
         </button>
-        <button 
-          :class="['tab', { active: activeTab === 'posts' }]" 
+        <button
+          :class="['tab', { active: activeTab === 'posts' }]"
           @click="activeTab = 'posts'"
         >
           News
         </button>
-        <button 
-          :class="['tab', { active: activeTab === 'messages' }]" 
+        <button
+          :class="['tab', { active: activeTab === 'messages' }]"
           @click="activeTab = 'messages'"
         >
           Messages
         </button>
       </div>
 
+      <div v-if="success" class="success-bar">
+        {{ success }}
+        <button @click="success = ''" class="close-success">×</button>
+      </div>
+
+      <div v-if="error" class="error-bar">
+        {{ error }}
+        <button @click="error = ''" class="close-error">×</button>
+      </div>
+
+      <div v-if="loading" class="loading-data">Loading...</div>
+
       <!-- Gallery Section -->
       <div v-if="activeTab === 'gallery'" class="tab-content">
         <div class="upload-section">
           <h2>Add New Photo</h2>
-          <input 
-            v-model="newTitle" 
-            type="text" 
+          <input
+            v-model="newTitle"
+            type="text"
             placeholder="Photo title (optional)"
             class="title-input"
           />
-          <input 
-            type="file" 
-            accept="image/*" 
-            @change="uploadPhoto" 
+          <input
+            type="file"
+            accept="image/*"
+            @change="uploadPhoto"
             :disabled="uploading"
             class="file-input"
           />
-          <p v-if="error" class="error">{{ error }}</p>
         </div>
 
         <div class="gallery-grid">
@@ -326,14 +350,14 @@ onMounted(async () => {
       <div v-if="activeTab === 'posts'" class="tab-content">
         <div class="upload-section">
           <h2>Add New Post</h2>
-          <input 
-            v-model="newTitle" 
-            type="text" 
+          <input
+            v-model="newTitle"
+            type="text"
             placeholder="Post title"
             class="title-input"
           />
-          <textarea 
-            v-model="newContent" 
+          <textarea
+            v-model="newContent"
             placeholder="Post content"
             class="content-input"
             rows="4"
@@ -342,14 +366,13 @@ onMounted(async () => {
             {{ uploading ? 'Creating...' : 'Create Post' }}
           </button>
           <p class="divider">or add with image:</p>
-          <input 
-            type="file" 
-            accept="image/*" 
-            @change="uploadPost" 
+          <input
+            type="file"
+            accept="image/*"
+            @change="uploadPost"
             :disabled="uploading"
             class="file-input"
           />
-          <p v-if="error" class="error">{{ error }}</p>
         </div>
 
         <div class="posts-list">
@@ -366,11 +389,11 @@ onMounted(async () => {
       <!-- Messages Section -->
       <div v-if="activeTab === 'messages'" class="tab-content">
         <h2>Contact Messages</h2>
-        
+
         <div v-if="messages.length === 0" class="empty">
           <p>No messages yet.</p>
         </div>
-        
+
         <div v-else class="messages-list">
           <div v-for="msg in messages" :key="msg.id" class="message-item">
             <div class="message-header">
@@ -506,9 +529,46 @@ onMounted(async () => {
   color: #0a0a0a;
 }
 
+.success-bar, .error-bar {
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Oswald', sans-serif;
+}
+
+.success-bar {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid #4caf50;
+  color: #4caf50;
+}
+
+.error-bar {
+  background: rgba(196, 69, 54, 0.1);
+  border: 1px solid #c44536;
+  color: #c44536;
+}
+
+.close-success, .close-error {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: inherit;
+}
+
 .tab-content {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 2rem;
+}
+
+.loading-data {
+  text-align: center;
+  color: #666;
+  font-family: 'Oswald', sans-serif;
   padding: 2rem;
 }
 
@@ -546,7 +606,7 @@ onMounted(async () => {
 }
 
 .file-input {
-  color: 888;
+  color: #888;
 }
 
 .submit-btn {
@@ -656,6 +716,7 @@ onMounted(async () => {
 .error {
   color: #c44536;
   margin-top: 1rem;
+  font-family: 'Oswald', sans-serif;
 }
 
 .tab-content h2 {
