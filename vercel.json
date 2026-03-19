@@ -2,15 +2,10 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "framework": "vue",
-
   "routes": [
-    { "src": "/api/gallery", "dest": "/backend/api/gallery.js" },
-    { "src": "/api/gallery/.*", "dest": "/backend/api/gallery.js" },
-    { "src": "/api/posts", "dest": "/backend/api/posts.js" },
-    { "src": "/api/posts/.*", "dest": "/backend/api/posts.js" },
-    { "src": "/api/messages", "dest": "/backend/api/messages.js" },
-    { "src": "/api/messages/.*", "dest": "/backend/api/messages.js" },
-    { "handle": "filesystem" },
+    { "src": "/api/gallery(.*)", "dest": "/backend/api/gallery.js" },
+    { "src": "/api/posts(.*)", "dest": "/backend/api/posts.js" },
+    { "src": "/api/messages(.*)", "dest": "/backend/api/messages.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
