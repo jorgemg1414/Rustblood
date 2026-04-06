@@ -71,9 +71,9 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
       <div class="container">
         <h2 class="section-title reveal">Latest Release</h2>
         <div class="featured-album reveal reveal-delay-1">
-          <img :src="albumCover" alt="Rust & Bone" class="album-cover" />
+          <img :src="albumCover" alt="Dissolution Beyond" class="album-cover" />
           <div class="album-info">
-            <h3>Rust & Bone</h3>
+            <h3>Dissolution Beyond</h3>
             <p>2025</p>
             <RouterLink to="/musica" class="btn btn-primary">View Discography</RouterLink>
           </div>

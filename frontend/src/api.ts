@@ -2,7 +2,7 @@ import { supabase } from './supabase'
 
 const API_URL = import.meta.env.VITE_API_URL !== undefined
   ? import.meta.env.VITE_API_URL
-  : 'http://localhost:3001'
+  : (import.meta.env.PROD ? '' : 'http://localhost:3001')
 
 async function apiRequest(endpoint: string, options: RequestInit = {}) {
   const session = await supabase.auth.getSession()

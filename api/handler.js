@@ -15,7 +15,7 @@ export function createHandler(routes) {
     }
 
     try {
-      apiLimiter(req)
+      await apiLimiter(req)
 
       const route = routes[req.method]
       if (!route) {
@@ -48,7 +48,7 @@ export async function requireAdmin(req) {
 }
 
 export async function requireAuthLimit(req) {
-  authLimiter(req)
+  await authLimiter(req)
 }
 
 export { supabase }

@@ -1,45 +1,50 @@
-const rateLimitMap = new Map()
+import { supabase } from '../config.js'
 
-const WINDOW_MS = 15 * 60 * 1000 // 15 minutos
-const MAX_REQUESTS = 100 // max requests por ventana
-const AUTH_MAX_REQUESTS = 10 // max intentos de login por ventana
+const WINDOW_SECONDS = 15 * 60 // 15 minutos
+const MAX_REQUESTS = 100
+const AUTH_MAX_REQUESTS = 10
 
+/**
+ * Crea un middleware de rate limit respaldado por Supabase.
+ * Es seguro en serverless porque el estado vive en Postgres, no en memoria.
+ *
+ * Opciones:
+ *   windowSeconds → tamaño de la ventana en segundos
+ *   max           → peticiones permitidas por ventana
+ *   isAuth        → preset para endpoints de login (max=10)
+ *   scope         → etiqueta para separar contadores (p.ej. 'contact')
+ */
 export function rateLimit(options = {}) {
-  const { windowMs = WINDOW_MS, max = MAX_REQUESTS, isAuth = false } = options
+  const {
+    windowSeconds = WINDOW_SECONDS,
+    max = MAX_REQUESTS,
+    isAuth = false,
+    scope = 'api'
+  } = options
   const limit = isAuth ? AUTH_MAX_REQUESTS : max
+  const effectiveScope = isAuth ? 'auth' : scope
 
-  return (req) => {
-    const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown'
-    const key = `${ip}-${isAuth ? 'auth' : 'api'}`
+  return async (req) => {
+    // Primera IP del X-Forwarded-For (Vercel prepende la IP real).
+    // No confiar en el header completo porque el cliente puede inyectar IPs.
+    const xff = req.headers['x-forwarded-for'] || ''
+    const ip = xff.split(',')[0].trim() || 'unknown'
+    const key = `${effectiveScope}:${ip}`
 
-    const now = Date.now()
-    const windowStart = now - windowMs
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_key: key,
+      p_max: limit,
+      p_window_seconds: windowSeconds
+    })
 
-    if (!rateLimitMap.has(key)) {
-      rateLimitMap.set(key, [])
+    if (error) {
+      // Fail-open: si Supabase falla no tiramos la web, pero lo logueamos.
+      console.error('Rate limit check failed:', error)
+      return
     }
 
-    const requests = rateLimitMap.get(key).filter(time => time > windowStart)
-    rateLimitMap.set(key, requests)
-
-    if (requests.length >= limit) {
+    if (data === false) {
       throw new Error('Too many requests. Please try again later.')
     }
-
-    requests.push(now)
   }
 }
-
-export function cleanupRateLimit() {
-  const now = Date.now()
-  for (const [key, requests] of rateLimitMap.entries()) {
-    const valid = requests.filter(time => time > now - WINDOW_MS)
-    if (valid.length === 0) {
-      rateLimitMap.delete(key)
-    } else {
-      rateLimitMap.set(key, valid)
-    }
-  }
-}
-
-setInterval(cleanupRateLimit, 60 * 1000)

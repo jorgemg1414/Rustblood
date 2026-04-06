@@ -12,7 +12,7 @@ interface Album {
 
 const albums: Album[] = [
   { 
-    title: 'Rust & Bone', 
+    title: 'Dissolution Beyond',
     year: 2025, 
     cover: albumCover,
     description: 'Our first album, a deep exploration of human resilience.',
