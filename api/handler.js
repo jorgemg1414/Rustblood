@@ -15,29 +15,39 @@ export function createHandler(routes) {
     }
 
     try {
-      await apiLimiter(req)
-
       const route = routes[req.method]
       if (!route) {
         return res.status(405).json({ error: 'Method not allowed' })
       }
 
+      // Rate limit global (por IP). Los endpoints pueden añadir limitadores
+      // más estrictos usando requireRateLimit(req, limiter).
+      await apiLimiter(req)
+
       return await route(req, res)
     } catch (error) {
-      if (error.message === 'Too many requests. Please try again later.') {
-        return res.status(429).json({ error: error.message })
+      const message = typeof error?.message === 'string' ? error.message : ''
+
+      if (message === 'Too many requests. Please try again later.') {
+        return res.status(429).json({ error: message })
       }
-      if (error.message === 'No token provided') {
-        return res.status(401).json({ error: 'No token provided' })
+      if (message === 'No token provided' || message === 'Invalid token') {
+        return res.status(401).json({ error: message })
       }
-      if (error.message === 'Invalid token') {
-        return res.status(401).json({ error: 'Invalid token' })
-      }
-      if (error.message.includes('Access denied')) {
-        return res.status(403).json({ error: error.message })
+      if (message.includes('Access denied')) {
+        return res.status(403).json({ error: message })
       }
 
-      console.error('API Error:', error)
+      // Log detallado en servidor para diagnosticar (Vercel logs),
+      // pero respuesta genérica al cliente.
+      console.error('[API Error]', {
+        method: req.method,
+        url: req.url,
+        message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint
+      })
       return res.status(500).json({ error: 'Internal server error' })
     }
   }
@@ -51,4 +61,8 @@ export async function requireAuthLimit(req) {
   await authLimiter(req)
 }
 
-export { supabase }
+export async function requireRateLimit(req, limiter) {
+  await limiter(req)
+}
+
+export { supabase, rateLimit }

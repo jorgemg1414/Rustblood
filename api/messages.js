@@ -1,5 +1,12 @@
-import { createHandler, requireAdmin, supabase } from './handler.js'
+import { createHandler, requireAdmin, requireRateLimit, rateLimit, supabase } from './handler.js'
 import { messageSchema } from './validation.js'
+
+// Rate limit estricto para el formulario de contacto: 5 envíos por IP cada hora.
+const contactLimiter = rateLimit({
+  scope: 'contact',
+  max: 5,
+  windowSeconds: 60 * 60
+})
 
 export default createHandler({
   async GET(req, res) {
@@ -15,6 +22,8 @@ export default createHandler({
   },
 
   async POST(req, res) {
+    await requireRateLimit(req, contactLimiter)
+
     const validation = messageSchema.safeParse(req.body)
     if (!validation.success) {
       return res.status(400).json({ error: validation.error.errors[0].message })
@@ -28,7 +37,10 @@ export default createHandler({
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('[messages.POST] insert failed:', error)
+      throw error
+    }
     return res.status(201).json(data)
   },
 

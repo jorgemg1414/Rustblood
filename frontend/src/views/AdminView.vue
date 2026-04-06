@@ -40,8 +40,38 @@ const posts = ref<Post[]>([])
 const messages = ref<Message[]>([])
 const uploading = ref(false)
 const loading = ref(false)
-const newTitle = ref('')
-const newContent = ref('')
+
+// Estado separado por sección para que cambiar de tab no pise los campos.
+const galleryTitle = ref('')
+const postTitle = ref('')
+const postContent = ref('')
+
+// Límites de subida. Deben coincidir con lo configurado en el bucket
+// "gallery" de Supabase Storage (file_size_limit / allowed_mime_types).
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024 // 5 MB
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+
+const sanitizeFileName = (name: string): string => {
+  const dot = name.lastIndexOf('.')
+  const base = (dot >= 0 ? name.slice(0, dot) : name)
+    .toLowerCase()
+    .replace(/[^a-z0-9-_]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60) || 'file'
+  const extRaw = dot >= 0 ? name.slice(dot + 1).toLowerCase() : ''
+  const ext = /^[a-z0-9]{1,5}$/.test(extRaw) ? extRaw : 'bin'
+  return `${base}.${ext}`
+}
+
+const validateImageFile = (file: File): string | null => {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return 'Only JPG, PNG, WEBP or GIF images are allowed'
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    return 'Image is too large (max 5 MB)'
+  }
+  return null
+}
 
 const handleSignIn = async () => {
   error.value = ''
@@ -105,16 +135,26 @@ const uploadPhoto = async (event: Event) => {
   const file = input.files[0]
   if (!file) return
 
+  const invalid = validateImageFile(file)
+  if (invalid) {
+    error.value = invalid
+    input.value = ''
+    return
+  }
+
   uploading.value = true
   error.value = ''
 
   try {
     const { supabase } = await import('../supabase')
-    const fileName = `${Date.now()}-${file.name}`
+    const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`
 
     const { error: uploadError } = await supabase.storage
       .from('gallery')
-      .upload(fileName, file)
+      .upload(fileName, file, {
+        contentType: file.type,
+        upsert: false
+      })
 
     if (uploadError) throw uploadError
 
@@ -122,14 +162,14 @@ const uploadPhoto = async (event: Event) => {
       .from('gallery')
       .getPublicUrl(fileName)
 
-    await galleryApi.create({ title: newTitle.value || 'Concert', image_url: publicUrl })
+    await galleryApi.create({ title: galleryTitle.value || 'Concert', image_url: publicUrl })
 
-    newTitle.value = ''
+    galleryTitle.value = ''
     input.value = ''
     success.value = 'Photo uploaded successfully'
     await fetchGallery()
   } catch (e: any) {
-    error.value = e.message
+    error.value = e.message || 'Upload failed'
   } finally {
     uploading.value = false
   }
@@ -155,16 +195,32 @@ const uploadPost = async (event: Event) => {
   const file = input.files[0]
   if (!file) return
 
+  if (!postTitle.value || !postContent.value) {
+    error.value = 'Title and content are required before adding an image'
+    input.value = ''
+    return
+  }
+
+  const invalid = validateImageFile(file)
+  if (invalid) {
+    error.value = invalid
+    input.value = ''
+    return
+  }
+
   uploading.value = true
   error.value = ''
 
   try {
     const { supabase } = await import('../supabase')
-    const fileName = `${Date.now()}-${file.name}`
+    const fileName = `${Date.now()}-${sanitizeFileName(file.name)}`
 
     const { error: uploadError } = await supabase.storage
       .from('gallery')
-      .upload(fileName, file)
+      .upload(fileName, file, {
+        contentType: file.type,
+        upsert: false
+      })
 
     if (uploadError) throw uploadError
 
@@ -173,25 +229,25 @@ const uploadPost = async (event: Event) => {
       .getPublicUrl(fileName)
 
     await postsApi.create({
-      title: newTitle.value,
-      content: newContent.value,
+      title: postTitle.value,
+      content: postContent.value,
       image_url: publicUrl
     })
 
-    newTitle.value = ''
-    newContent.value = ''
+    postTitle.value = ''
+    postContent.value = ''
     input.value = ''
     success.value = 'Post created successfully'
     await fetchPosts()
   } catch (e: any) {
-    error.value = e.message
+    error.value = e.message || 'Upload failed'
   } finally {
     uploading.value = false
   }
 }
 
 const createPost = async () => {
-  if (!newTitle.value || !newContent.value) {
+  if (!postTitle.value || !postContent.value) {
     error.value = 'Title and content are required'
     return
   }
@@ -201,16 +257,16 @@ const createPost = async () => {
 
   try {
     await postsApi.create({
-      title: newTitle.value,
-      content: newContent.value
+      title: postTitle.value,
+      content: postContent.value
     })
 
-    newTitle.value = ''
-    newContent.value = ''
+    postTitle.value = ''
+    postContent.value = ''
     success.value = 'Post created successfully'
     await fetchPosts()
   } catch (e: any) {
-    error.value = e.message
+    error.value = e.message || 'Failed to create post'
   } finally {
     uploading.value = false
   }
@@ -321,18 +377,19 @@ onMounted(async () => {
         <div class="upload-section">
           <h2>Add New Photo</h2>
           <input
-            v-model="newTitle"
+            v-model="galleryTitle"
             type="text"
             placeholder="Photo title (optional)"
             class="title-input"
           />
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             @change="uploadPhoto"
             :disabled="uploading"
             class="file-input"
           />
+          <p class="hint">JPG, PNG, WEBP or GIF · max 5 MB</p>
         </div>
 
         <div class="gallery-grid">
@@ -351,13 +408,13 @@ onMounted(async () => {
         <div class="upload-section">
           <h2>Add New Post</h2>
           <input
-            v-model="newTitle"
+            v-model="postTitle"
             type="text"
             placeholder="Post title"
             class="title-input"
           />
           <textarea
-            v-model="newContent"
+            v-model="postContent"
             placeholder="Post content"
             class="content-input"
             rows="4"
@@ -368,11 +425,12 @@ onMounted(async () => {
           <p class="divider">or add with image:</p>
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             @change="uploadPost"
             :disabled="uploading"
             class="file-input"
           />
+          <p class="hint">JPG, PNG, WEBP or GIF · max 5 MB</p>
         </div>
 
         <div class="posts-list">
@@ -636,6 +694,13 @@ onMounted(async () => {
   font-family: 'Oswald', sans-serif;
   margin: 1.5rem 0 1rem;
   text-align: center;
+}
+
+.hint {
+  color: #666;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 .gallery-grid {

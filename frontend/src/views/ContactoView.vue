@@ -16,22 +16,25 @@ const error = ref('')
 const submitForm = async () => {
   loading.value = true
   error.value = ''
-  
+
   try {
     await messagesApi.create({
-      name: form.value.name,
-      email: form.value.email,
+      name: form.value.name.trim(),
+      email: form.value.email.trim(),
       subject: form.value.subject,
-      message: form.value.message
+      message: form.value.message.trim()
     })
-    
+
     submitted.value = true
     form.value = { name: '', email: '', subject: '', message: '' }
     setTimeout(() => {
       submitted.value = false
     }, 5000)
   } catch (e: any) {
-    error.value = e.message
+    const msg = e?.message || 'Could not send the message. Please try again.'
+    error.value = msg.includes('Too many requests')
+      ? 'You have sent too many messages. Please try again in a while.'
+      : msg
   } finally {
     loading.value = false
   }

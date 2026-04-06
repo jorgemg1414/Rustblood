@@ -22,7 +22,9 @@ async function apiRequest(endpoint: string, options: RequestInit = {}) {
     headers,
   })
 
-  if (response.status === 401) {
+  // Solo forzamos logout cuando la petición iba autenticada: un 401 en un
+  // endpoint público (ej. POST /messages) no debe tirar al usuario al admin.
+  if (response.status === 401 && token) {
     await supabase.auth.signOut()
     window.location.href = '/admin'
     throw new Error('Session expired')
@@ -30,7 +32,7 @@ async function apiRequest(endpoint: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: 'Unknown error' }))
-    throw new Error(error.error || 'Request failed')
+    throw new Error(error.error || `Request failed (${response.status})`)
   }
 
   return response.json()
