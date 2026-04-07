@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { gallery } from '../data/content'
 const photos = gallery
-const selectedPhoto = ref(null)
+const selectedPhoto = ref<any>(null)
 const openLightbox = (p: any) => selectedPhoto.value = p
 const closeLightbox = () => selectedPhoto.value = null
 </script>
