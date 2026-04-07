@@ -1,55 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { messagesApi } from '../api'
-
-const form = ref({
-  name: '',
-  email: '',
-  subject: '',
-  message: ''
-})
-
-const submitted = ref(false)
-const loading = ref(false)
-const error = ref('')
-
-const submitForm = async () => {
-  loading.value = true
-  error.value = ''
-
-  try {
-    await messagesApi.create({
-      name: form.value.name.trim(),
-      email: form.value.email.trim(),
-      subject: form.value.subject,
-      message: form.value.message.trim()
-    })
-
-    submitted.value = true
-    form.value = { name: '', email: '', subject: '', message: '' }
-    setTimeout(() => {
-      submitted.value = false
-    }, 5000)
-  } catch (e: any) {
-    const msg = e?.message || 'Could not send the message. Please try again.'
-    error.value = msg.includes('Too many requests')
-      ? 'You have sent too many messages. Please try again in a while.'
-      : msg
-  } finally {
-    loading.value = false
-  }
-}
-
 const contactInfo = [
-  { icon: '📧', label: 'Email', value: 'booking@rustblood.com' },
-  { icon: '📱', label: 'Phone', value: '+123 456 7890' },
+  { icon: '📧', label: 'Email', value: 'booking@rustblood.com', href: 'mailto:booking@rustblood.com' },
   { icon: '📍', label: 'Location', value: 'Tepatitlán de Morelos, Jalisco, Mexico' }
 ]
 
 const socialLinks = [
-  { name: 'Instagram', url: 'https://www.instagram.com/rustblood_band/', icon: '📷' },
-  { name: 'YouTube', url: 'https://www.youtube.com/@Rustblood_band', icon: '▶️' },
-  { name: 'Spotify', url: '#', icon: '🎵' },
+  { name: 'Instagram', url: 'https://instagram.com/rustblood', icon: '📷' },
+  { name: 'YouTube', url: 'https://youtube.com/@Rustblood_band', icon: '▶️' },
 ]
 </script>
 
@@ -71,7 +28,8 @@ const socialLinks = [
                 <span class="info-icon">{{ info.icon }}</span>
                 <div class="info-content">
                   <span class="info-label">{{ info.label }}</span>
-                  <span class="info-value">{{ info.value }}</span>
+                  <a v-if="info.href" :href="info.href" class="info-value">{{ info.value }}</a>
+                  <span v-else class="info-value">{{ info.value }}</span>
                 </div>
               </div>
             </div>
@@ -87,47 +45,10 @@ const socialLinks = [
           </div>
 
           <div class="contact-form-wrapper">
-            <h2 class="section-title">Message</h2>
-            
-            <form v-if="!submitted" @submit.prevent="submitForm" class="contact-form">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input v-model="form.name" type="text" id="name" required />
-              </div>
-              
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input v-model="form.email" type="email" id="email" required />
-              </div>
-              
-              <div class="form-group">
-                <label for="subject">Subject</label>
-                <select v-model="form.subject" id="subject" required>
-                  <option value="">Select...</option>
-                  <option value="booking">Booking</option>
-                  <option value="press">Press</option>
-                  <option value="collaboration">Collaboration</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="message">Message</label>
-                <textarea v-model="form.message" id="message" rows="5" required></textarea>
-              </div>
-              
-              <p v-if="error" class="error">{{ error }}</p>
-              
-              <button type="submit" class="btn btn-primary" :disabled="loading">
-                {{ loading ? 'Sending...' : 'Send' }}
-              </button>
-            </form>
-
-            <div v-else class="success-message">
-              <span class="success-icon">✓</span>
-              <h3>Message Sent!</h3>
-              <p>Thank you for contacting us. We'll get back to you soon.</p>
-            </div>
+            <h2 class="section-title">Contact Us</h2>
+            <p class="contact-email">
+              Send us an email at <a href="mailto:booking@rustblood.com">booking@rustblood.com</a>
+            </p>
           </div>
         </div>
       </div>
@@ -256,110 +177,25 @@ const socialLinks = [
   padding: 2rem;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
+.contact-form-wrapper {
+  background: #111;
+  border: 1px solid #222;
+  padding: 2rem;
 }
 
-.form-group label {
-  display: block;
+.contact-email {
   font-family: 'Oswald', sans-serif;
-  font-size: 0.85rem;
   color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  background: #0a0a0a;
-  border: 1px solid #333;
-  color: #e8e8e8;
-  font-family: 'Oswald', sans-serif;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #c44536;
-}
-
-.form-group select {
-  cursor: pointer;
-}
-
-.form-group textarea {
-  resize: vertical;
-}
-
-.btn {
-  font-family: 'Oswald', sans-serif;
-  font-size: 1rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 1rem 2.5rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-primary {
-  background: #c44536;
-  color: #0a0a0a;
-  width: 100%;
-}
-
-.btn-primary:hover {
-  background: #e05545;
-  box-shadow: 0 0 30px rgba(196, 69, 54, 0.5);
-}
-
-.success-message {
-  text-align: center;
-  padding: 3rem 1rem;
-}
-
-.success-icon {
-  display: inline-block;
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
-  font-size: 2rem;
-  background: #c44536;
-  color: #0a0a0a;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-}
-
-.success-message h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.5rem;
-  color: #e8e8e8;
-  margin: 0 0 0.5rem;
-}
-
-.success-message p {
-  font-family: 'Oswald', sans-serif;
-  color: #666;
-}
-
-.error {
+.contact-email a {
   color: #c44536;
-  font-family: 'Oswald', sans-serif;
-  margin-bottom: 1rem;
+  text-decoration: none;
 }
 
-.btn:disabled {
-  background: #666;
-  cursor: not-allowed;
+.contact-email a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 768px) {

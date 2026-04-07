@@ -1,30 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { postsApi } from '../api'
-
-interface Post {
-  id: number
-  title: string
-  content: string
-  image_url: string
-  created_at: string
-}
-
-const posts = ref<Post[]>([])
-const loading = ref(true)
-const errorMsg = ref('')
-
-const fetchPosts = async () => {
-  loading.value = true
-  errorMsg.value = ''
-  
-  try {
-    posts.value = await postsApi.getAll()
-  } catch (e: any) {
-    errorMsg.value = e.message
-  }
-  loading.value = false
-}
+import { posts } from '../data/content'
 
 const formatDate = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -33,10 +8,6 @@ const formatDate = (dateStr: string) => {
     day: 'numeric'
   })
 }
-
-onMounted(() => {
-  fetchPosts()
-})
 </script>
 
 <template>
@@ -48,30 +19,16 @@ onMounted(() => {
 
     <section class="posts-section">
       <div class="container">
-        <div v-if="loading" class="loading">Loading...</div>
-        
-        <div v-else-if="errorMsg" class="error">
-          <p>Error: {{ errorMsg }}</p>
-          <p>Make sure the posts table exists in Supabase.</p>
-        </div>
-        
-        <div v-else-if="posts.length === 0" class="empty">
-          <p>No posts yet.</p>
-        </div>
-        
-        <div v-else class="posts-list">
+        <div class="posts-list">
           <article 
             v-for="post in posts" 
             :key="post.id" 
             class="post-card"
           >
-            <div v-if="post.image_url" class="post-image">
-              <img :src="post.image_url" :alt="post.title" />
-            </div>
             <div class="post-content">
-              <span class="post-date">{{ formatDate(post.created_at) }}</span>
+              <span class="post-date">{{ formatDate(post.date) }}</span>
               <h2 class="post-title">{{ post.title }}</h2>
-              <p class="post-excerpt">{{ post.content.substring(0, 200) }}...</p>
+              <p class="post-excerpt">{{ post.content }}</p>
             </div>
           </article>
         </div>
