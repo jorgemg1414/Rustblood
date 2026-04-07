@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { gallery } from '../data/content'
 const photos = gallery
 const selectedPhoto = ref(null)
