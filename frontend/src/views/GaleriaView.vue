@@ -11,7 +11,7 @@ const closeLightbox = () => selectedPhoto.value = null
   <div class="galeria">
     <div class="container">
       <h1 class="title">Gallery</h1>
-      <p class="subtitle">Our concerts</p>
+      <p class="subtitle">Our concerts and live shows</p>
       <div class="gallery-grid">
         <div v-for="photo in photos" :key="photo.id" class="gallery-item" @click="openLightbox(photo)">
           <img :src="photo.image" :alt="photo.title" />
