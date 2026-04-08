@@ -12,13 +12,13 @@ export const gallery = [
 ]
 
 export const posts = [
-  { id: 1, title: 'New Album Released', content: 'We are thrilled to announce the release of our debut album "Dissolution Beyond".', date: '2025-12-01' },
+  { id: 1, title: 'New Album Coming 2026', content: 'We are thrilled to announce our upcoming debut album "Dissolution Beyond" coming in 2026.', date: '2025-12-01' },
   { id: 2, title: 'Upcoming Tour Dates', content: 'We are excited to announce our upcoming tour dates across Mexico.', date: '2025-11-15' },
   { id: 3, title: 'Hoka Hey Festival', content: 'We are honored to be part of this year\'s Hoka Hey Festival.', date: '2025-10-01' }
 ]
 
 export const albums = [
-  { id: 1, title: 'Dissolution Beyond', year: 2025, cover: albumCover, description: 'Our first album, a deep exploration of human resilience.', tracks: ['Dissolution Beyond', 'In a Crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied'] }
+  { id: 1, title: 'Dissolution Beyond', year: 2026, cover: albumCover, description: 'Our first album, a deep exploration of human resilience.', tracks: ['Dissolution Beyond', 'In a Crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied'], released: true }
 ]
 
 export const videos = [{ id: 'cSLdIj_iwgI', title: 'RustBlood - Freedom of Die' }]

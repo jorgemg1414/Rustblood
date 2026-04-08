@@ -1,18 +1,22 @@
 <script setup lang="ts">
+import { Mail, MapPin, Instagram, Youtube } from 'lucide-vue-next'
+import rtscene from '../assets/rtscene.jpg'
+
 const contactInfo = [
-  { icon: '📧', label: 'Email', value: 'booking@rustblood.com', href: 'mailto:booking@rustblood.com' },
-  { icon: '📍', label: 'Location', value: 'Tepatitlán de Morelos, Jalisco, Mexico' }
+  { icon: Mail, label: 'Email', value: 'booking@rustblood.com', href: 'mailto:booking@rustblood.com' },
+  { icon: MapPin, label: 'Location', value: 'Tepatitlán de Morelos, Jalisco, Mexico' }
 ]
 
 const socialLinks = [
-  { name: 'Instagram', url: 'https://instagram.com/rustblood', icon: '📷' },
-  { name: 'YouTube', url: 'https://youtube.com/@Rustblood_band', icon: '▶️' },
+  { name: 'Instagram', url: 'https://instagram.com/rustblood', icon: Instagram },
+  { name: 'YouTube', url: 'https://youtube.com/@Rustblood_band', icon: Youtube },
 ]
 </script>
 
 <template>
   <div class="contacto">
     <section class="page-header">
+      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
       <h1 class="page-title">Contact</h1>
       <p class="page-subtitle">Get in touch</p>
     </section>
@@ -25,7 +29,7 @@ const socialLinks = [
             
             <div class="info-items">
               <div v-for="info in contactInfo" :key="info.label" class="info-item">
-                <span class="info-icon">{{ info.icon }}</span>
+                <component :is="info.icon" class="info-icon" :size="24" />
                 <div class="info-content">
                   <span class="info-label">{{ info.label }}</span>
                   <a v-if="info.href" :href="info.href" class="info-value">{{ info.value }}</a>
@@ -37,8 +41,8 @@ const socialLinks = [
             <div class="social-section">
               <h3>Follow Us</h3>
               <div class="social-links">
-                <a v-for="social in socialLinks" :key="social.name" :href="social.url" class="social-link">
-                  {{ social.icon }}
+                <a v-for="social in socialLinks" :key="social.name" :href="social.url" class="social-link" :aria-label="social.name">
+                  <component :is="social.icon" :size="24" />
                 </a>
               </div>
             </div>
@@ -61,13 +65,24 @@ const socialLinks = [
 
 .contacto {
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 .page-header {
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  padding: 6rem 2rem 4rem;
+  background: linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(17,17,17,0.9) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.3;
+  z-index: 0;
 }
 
 .page-title {
@@ -123,7 +138,8 @@ const socialLinks = [
 }
 
 .info-icon {
-  font-size: 1.5rem;
+  color: #c44536;
+  flex-shrink: 0;
 }
 
 .info-content {
@@ -160,10 +176,12 @@ const socialLinks = [
 }
 
 .social-link {
-  font-size: 1.5rem;
   color: #666;
   transition: all 0.3s ease;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .social-link:hover {
@@ -199,9 +217,17 @@ const socialLinks = [
 }
 
 @media (max-width: 768px) {
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
+  .page-header { padding: 6rem 2rem 3rem; }
+  .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .section-title { font-size: 1.5rem; }
+  .info-item { padding: 0.75rem 0; }
+  .social-link:active { color: #c44536; transform: scale(1.1); }
+  .contact-email a:active { color: #e05545; }
+}
+
+@media (max-width: 480px) {
+  .page-title { font-size: 3rem; }
+  .contact-form-wrapper { padding: 1.5rem; }
+  .info-value { font-size: 0.9rem; }
 }
 </style>

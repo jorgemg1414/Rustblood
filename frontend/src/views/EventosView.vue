@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import rtscene from '../assets/rtscene.jpg'
 
 interface TourDate {
   date: string
@@ -40,6 +41,7 @@ onMounted(() => {
 <template>
   <div class="eventos">
     <section class="page-header">
+      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
       <h1 class="page-title reveal">Events</h1>
       <p class="page-subtitle reveal reveal-delay-1">2026</p>
     </section>
@@ -85,13 +87,24 @@ onMounted(() => {
 
 .eventos {
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 .page-header {
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  padding: 6rem 2rem 4rem;
+  background: linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(17,17,17,0.9) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.3;
+  z-index: 0;
 }
 
 .page-title {
@@ -259,14 +272,31 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
+  .page-header { padding: 6rem 2rem 3rem; }
+  .container { padding: 2rem 1rem; }
+  
   .tour-item {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+    padding: 1.5rem 1rem;
   }
   
-  .tour-date-box {
-    margin-right: 0;
+  .tour-date-box { margin-right: 0; }
+  
+  .past-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
   }
+  
+  .past-date, .past-city, .past-venue { text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .page-title { font-size: 2.5rem; }
+  .section-title { font-size: 1.5rem; }
+  .tour-city { font-size: 1rem; }
+  .btn-ticket, .sold-out { padding: 0.5rem 1rem; font-size: 0.7rem; }
 }
 </style>

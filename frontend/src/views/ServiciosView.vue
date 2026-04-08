@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { Music, Guitar, Video, Mic } from 'lucide-vue-next'
+import rtscene from '../assets/rtscene.jpg'
+
 interface Service {
-  icon: string
+  icon: any
   title: string
   description: string
   features: string[]
@@ -8,25 +11,25 @@ interface Service {
 
 const services: Service[] = [
   {
-    icon: '🎵',
+    icon: Music,
     title: 'Music Production',
     description: 'Recording, mixing and mastering with professional sound adapted to metal and heavy genres.',
     features: ['Studio Recording', 'Mixing & Mastering', 'Executive Production', 'Musical Advisory']
   },
   {
-    icon: '🎸',
+    icon: Guitar,
     title: 'Session Musicians',
     description: 'We have professional musicians for recording sessions on your projects.',
     features: ['Electric & Acoustic Guitars', 'Bass', 'Drums', 'Keys & Synths']
   },
   {
-    icon: '🎬',
+    icon: Video,
     title: 'Audiovisual Production',
     description: 'Creating visual content for bands: music videos, documentaries and promotional material.',
     features: ['Music Videos', 'Documentaries', 'Live Recording', 'Animation']
   },
   {
-    icon: '📢',
+    icon: Mic,
     title: 'Booking & Management',
     description: 'We manage performances, tours and contacts with festivals and venues.',
     features: ['Venue Booking', 'Festival Contacts', 'Tour Logistics', 'Image Advisory']
@@ -37,6 +40,7 @@ const services: Service[] = [
 <template>
   <div class="servicios">
     <section class="page-header">
+      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
       <h1 class="page-title">Services</h1>
       <p class="page-subtitle">What we offer</p>
     </section>
@@ -45,7 +49,9 @@ const services: Service[] = [
       <div class="container">
         <div class="services-grid">
           <div v-for="service in services" :key="service.title" class="service-card">
-            <div class="service-icon">{{ service.icon }}</div>
+            <div class="service-icon">
+              <component :is="service.icon" :size="40" />
+            </div>
             <h2 class="service-title">{{ service.title }}</h2>
             <p class="service-description">{{ service.description }}</p>
             <ul class="service-features">
@@ -68,13 +74,24 @@ const services: Service[] = [
 
 .servicios {
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 .page-header {
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  padding: 6rem 2rem 4rem;
+  background: linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(17,17,17,0.9) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.3;
+  z-index: 0;
 }
 
 .page-title {
@@ -123,8 +140,10 @@ const services: Service[] = [
 }
 
 .service-icon {
-  font-size: 3rem;
+  color: #c44536;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
 }
 
 .service-title {

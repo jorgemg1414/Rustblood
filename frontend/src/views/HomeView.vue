@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import logo from '../assets/logo.png'
-import rtscene from '../assets/rtscene.jpg'
 import albumCover from '../assets/album.jpg'
+import heroVideo from '../assets/prueba_home.mp4'
+import rtscene from '../assets/rtscene.jpg'
 
 const particles = ref<{ id: number; left: string; delay: string; size: string }[]>([])
 
@@ -43,14 +44,15 @@ onMounted(() => {
       </div>
       <div class="hero-content">
         <img :src="logo" alt="Rustblood" class="hero-logo" />
-        <p class="tagline demo-badge">PAGINA DEMO (NO OFICIAL) V2</p>
         <p class="tagline">Born of Rust forged in Blood</p>
         <div class="hero-btns">
           <RouterLink to="/musica" class="btn btn-primary">Listen Now</RouterLink>
           <RouterLink to="/eventos" class="btn btn-secondary">View Dates</RouterLink>
         </div>
       </div>
-      <div class="hero-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
+      <video class="hero-video" autoplay loop muted playsinline>
+        <source :src="heroVideo" type="video/mp4" />
+      </video>
     </section>
 
     <section class="about-preview">
@@ -67,6 +69,10 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
       </div>
     </section>
 
+    <section class="photo-section">
+      <div class="parallax-photo reveal" :style="{ backgroundImage: `url(${rtscene})` }"></div>
+    </section>
+
     <section class="featured-music">
       <div class="container">
         <h2 class="section-title reveal">Latest Release</h2>
@@ -74,7 +80,7 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
           <img :src="albumCover" alt="Dissolution Beyond" class="album-cover" />
           <div class="album-info">
             <h3>Dissolution Beyond</h3>
-            <p>2025</p>
+            <p class="album-year">PRÓXIMAMENTE 2026</p>
             <RouterLink to="/musica" class="btn btn-primary">View Discography</RouterLink>
           </div>
         </div>
@@ -97,6 +103,8 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   justify-content: center;
   position: relative;
   overflow: hidden;
+  padding-top: 120px;
+  z-index: 1;
 }
 
 .particles {
@@ -124,15 +132,15 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   }
 }
 
-.hero-bg {
+.hero-video {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   filter: blur(8px);
-  opacity: 0.3;
+  opacity: 0.4;
   z-index: 0;
-  animation: bgPulse 8s ease-in-out infinite;
 }
 
 @keyframes bgPulse {
@@ -302,6 +310,8 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 .about-preview {
   background: linear-gradient(180deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%);
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .about-preview .container {
@@ -318,8 +328,46 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   margin: 0 auto 2rem;
 }
 
+.photo-section {
+  position: relative;
+  height: 50vh;
+  overflow: hidden;
+}
+
+.photo-section::before {
+  top: 0;
+}
+
+.photo-section::after {
+  bottom: 0;
+}
+
+.parallax-photo.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.parallax-photo {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.1);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  position: relative;
+}
+
 .featured-music {
   background: #0a0a0a;
+}
+
+.parallax-photo {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: block;
 }
 
 .featured-music .container {
@@ -338,15 +386,13 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   width: 300px;
   height: 300px;
   object-fit: cover;
-  filter: grayscale(0.5);
-  transition: transform 0.5s ease, filter 0.5s ease;
+  transition: transform 0.5s ease;
   cursor: pointer;
   border-radius: 4px;
 }
 
 .album-cover:hover {
   transform: scale(1.1) rotate(5deg);
-  filter: grayscale(0);
 }
 
 .album-info {
@@ -384,6 +430,74 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   
   .btn::before {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-logo {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .tagline {
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    padding: 0 1rem;
+  }
+
+  .demo-badge {
+    font-size: 0.75rem;
+  }
+
+  .hero-btns {
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .hero-btns .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .about-preview .container,
+  .featured-music .container {
+    padding: 3rem 1rem;
+  }
+
+  .about-preview p {
+    font-size: 1rem;
+    text-align: left;
+    padding: 0 1rem;
+  }
+
+  .featured-album {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .album-cover {
+    width: 200px;
+    height: 200px;
+  }
+
+  .album-info h3 {
+    font-size: 1.8rem;
+  }
+
+  .album-info .album-year {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .album-cover {
+    width: 150px;
+    height: 150px;
+  }
+
+  .hero-btns {
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>

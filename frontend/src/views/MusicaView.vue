@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import albumCover from '../assets/album.jpg'
+import rtscene from '../assets/rtscene.jpg'
+import { Music, Headphones, Play, Guitar } from 'lucide-vue-next'
 
 interface Album {
   title: string
@@ -8,15 +10,17 @@ interface Album {
   cover: string
   description: string
   tracks: string[]
+  released?: boolean
 }
 
 const albums: Album[] = [
   { 
     title: 'Dissolution Beyond',
-    year: 2025, 
+    year: 2026, 
     cover: albumCover,
     description: 'Our first album, a deep exploration of human resilience.',
-    tracks: ['Dissolution Beyond', 'In a crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied']
+    tracks: ['Dissolution Beyond', 'In a crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied'],
+    released: true
   },
 ]
 
@@ -25,10 +29,10 @@ const videos = [
 ]
 
 const socialLinks = [
-  { name: 'Spotify', url: '#', icon: '🎵' },
-  { name: 'Apple Music', url: '#', icon: '🎧' },
-  { name: 'YouTube', url: 'https://www.youtube.com/@Rustblood_band', icon: '▶️' },
-  { name: 'Bandcamp', url: '#', icon: '🎸' }
+  { name: 'Spotify', url: '#', icon: Music },
+  { name: 'Apple Music', url: '#', icon: Headphones },
+  { name: 'YouTube', url: 'https://www.youtube.com/@Rustblood_band', icon: Play },
+  { name: 'Bandcamp', url: '#', icon: Guitar }
 ]
 
 onMounted(() => {
@@ -50,19 +54,21 @@ onMounted(() => {
 <template>
   <div class="musica">
     <section class="page-header">
+      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
       <h1 class="page-title reveal">Music</h1>
       <p class="page-subtitle reveal reveal-delay-1">Our discography</p>
     </section>
 
     <section class="albums-section">
       <div class="container">
-        <div v-for="album in albums" :key="album.title" class="album-card reveal reveal-delay-2">
+        <div v-for="album in albums" :key="album.title" class="album-card reveal reveal-delay-2" :class="{ 'not-released': !album.released }">
           <img :src="album.cover" alt="Album cover" class="album-cover" />
           <div class="album-content">
             <h2 class="album-title">{{ album.title }}</h2>
             <span class="album-year">{{ album.year }}</span>
+            <span v-if="!album.released" class="coming-soon">PRÓXIMAMENTE</span>
             <p class="album-description">{{ album.description }}</p>
-            <div class="album-tracks">
+            <div v-if="album.released" class="album-tracks">
               <h4>Tracklist</h4>
               <ul>
                 <li v-for="(track, index) in album.tracks" :key="track">
@@ -71,9 +77,10 @@ onMounted(() => {
                 </li>
               </ul>
             </div>
-            <div class="album-links">
+            <div v-if="album.released" class="album-links">
               <a v-for="social in socialLinks" :key="social.name" :href="social.url" class="social-btn">
-                {{ social.icon }} {{ social.name }}
+                <component :is="social.icon" :size="16" />
+                {{ social.name }}
               </a>
             </div>
           </div>
@@ -105,13 +112,24 @@ onMounted(() => {
 
 .musica {
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 .page-header {
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  padding: 6rem 2rem 4rem;
+  background: linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(17,17,17,0.9) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.3;
+  z-index: 0;
 }
 
 .page-title {
@@ -157,13 +175,7 @@ onMounted(() => {
   height: 250px;
   object-fit: cover;
   flex-shrink: 0;
-  filter: grayscale(0.5);
-  transition: filter 0.3s ease;
   border-radius: 4px;
-}
-
-.album-card:hover .album-cover {
-  filter: grayscale(0);
 }
 
 .album-content {
@@ -225,6 +237,28 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
+.coming-soon {
+  display: inline-block;
+  background: #c44536;
+  color: #0a0a0a;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  padding: 0.3rem 0.8rem;
+  margin-left: 1rem;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(196, 69, 54, 0.5); }
+  50% { box-shadow: 0 0 15px rgba(196, 69, 54, 0.8); }
+}
+
+.not-released {
+  opacity: 0.9;
+  border-style: dashed;
+}
+
 .social-btn {
   font-family: 'Oswald', sans-serif;
   font-size: 0.8rem;
@@ -235,6 +269,9 @@ onMounted(() => {
   color: #888;
   text-decoration: none;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .social-btn:hover {
@@ -282,14 +319,57 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
+  .page-header {
+    padding: 6rem 2rem 3rem;
+  }
+
+  .container {
+    padding: 2rem 1rem;
+  }
+
   .album-card {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    padding: 1.5rem;
   }
-  
+
+  .album-cover {
+    width: 200px;
+    height: 200px;
+  }
+
+  .album-content {
+    width: 100%;
+  }
+
   .album-links {
     justify-content: center;
+  }
+
+  .videos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .coming-soon {
+    display: block;
+    margin: 0.5rem 0 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .album-cover {
+    width: 150px;
+    height: 150px;
+  }
+
+  .album-title {
+    font-size: 1.5rem;
+  }
+
+  .social-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.7rem;
   }
 }
 </style>

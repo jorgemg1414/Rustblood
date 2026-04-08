@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { posts } from '../data/content'
+import rtscene from '../assets/rtscene.jpg'
 
 const formatDate = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -13,6 +14,7 @@ const formatDate = (dateStr: string) => {
 <template>
   <div class="blog">
     <section class="page-header">
+      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
       <h1 class="page-title">News</h1>
       <p class="page-subtitle">Latest updates</p>
     </section>
@@ -42,13 +44,24 @@ const formatDate = (dateStr: string) => {
 
 .blog {
   min-height: 100vh;
-  padding-top: 80px;
 }
 
 .page-header {
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  padding: 6rem 2rem 4rem;
+  background: linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(17,17,17,0.9) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.3;
+  z-index: 0;
 }
 
 .page-title {
@@ -154,6 +167,9 @@ const formatDate = (dateStr: string) => {
 }
 
 @media (max-width: 768px) {
+  .page-header { padding: 6rem 2rem 3rem; }
+  .container { padding: 2rem 1rem; }
+  
   .post-image {
     height: 200px;
   }
@@ -164,6 +180,11 @@ const formatDate = (dateStr: string) => {
   
   .post-title {
     font-size: 1.5rem;
+  }
+
+  .post-card:active {
+    transform: translateY(-2px);
+    border-color: #c44536;
   }
 }
 </style>
