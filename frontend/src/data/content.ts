@@ -33,7 +33,7 @@ export const contact = {
   phone: '+52 33 1234 5678',
   location: 'Tepatitlán, Jalisco, Mexico',
   social: [
-    { name: 'Instagram', url: 'https://instagram.com/rustblood', icon: '📷' },
+    { name: 'Instagram', url: 'https://instagram.com/rustblood_band', icon: '📷' },
     { name: 'YouTube', url: 'https://youtube.com/@Rustblood_band', icon: '▶️' }
   ]
 }
