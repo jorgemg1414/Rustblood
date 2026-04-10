@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute, RouterLink, useRouter } from 'vue-router'
 import lemmy from '../assets/members/lemmy.jpg'
 import alan from '../assets/members/alan.jpg'
 import joshua from '../assets/members/joshua.jpg'
@@ -33,7 +33,9 @@ const members: Member[] = [
     photo: edson,
     bio: '',
     influences: [],
-    socials: {}
+    socials: {
+      instagram: 'https://www.instagram.com/edsontm_/'
+    }
   },
   {
     id: 'joshua',
@@ -42,7 +44,9 @@ const members: Member[] = [
     photo: joshua,
     bio: '',
     influences: [],
-    socials: {}
+    socials: {
+      instagram: 'https://www.instagram.com/joshua_rustblood/'
+    }
   },
   {
     id: 'lemmy',
@@ -51,7 +55,9 @@ const members: Member[] = [
     photo: lemmy,
     bio: '',
     influences: [],
-    socials: {}
+    socials: {
+      instagram: 'https://www.instagram.com/vnm_lmtr/'
+    }
   },
   {
     id: 'alan',
@@ -60,11 +66,14 @@ const members: Member[] = [
     photo: alan,
     bio: '',
     influences: [],
-    socials: {}
+    socials: {
+      instagram: 'https://www.instagram.com/alan_gomez_drums/'
+    }
   }
 ]
 
 const route = useRoute()
+const router = useRouter()
 const memberId = route.params.name as string
 
 const member = computed(() => {
@@ -72,11 +81,14 @@ const member = computed(() => {
   const found = members.find(m => m.id === id)
   if (found) return found
   const fallback = members.find(m => m.name.toLowerCase().replace(/ /g, '-').replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ú/g, 'u') === id)
-  return fallback || members[0]
+  return fallback || null
 })
 
 onMounted(() => {
   window.scrollTo(0, 0)
+  if (!member.value) {
+    router.replace('/404')
+  }
 })
 </script>
 
@@ -89,49 +101,37 @@ onMounted(() => {
       <p class="instrument reveal">{{ member?.instrument }}</p>
     </section>
 
-    <section class="content-section" v-if="member">
+    <section class="content-section">
       <div class="container">
         <div class="profile-section">
-          <div class="main-photo reveal">
-            <img :src="member.photo" :alt="member.name" />
+          <div class="main-photo">
+            <img :src="member?.photo" :alt="member?.name" />
           </div>
           
-          <div class="info-panel reveal">
+          <div class="info-panel">
             <h2>Biography</h2>
-            <p class="bio">{{ member.bio || 'Coming soon...' }}</p>
-            
-            <div v-if="member.photos?.length" class="extra-photos">
-              <h3>More Photos</h3>
-              <div class="photos-grid">
-                <img v-for="(photo, idx) in member.photos" :key="idx" :src="photo" alt="Photo" />
-              </div>
-            </div>
+            <p class="bio">{{ member?.bio || 'Coming soon...' }}</p>
           </div>
         </div>
 
-        <div class="influences-section reveal">
-          <h2>Influences & Artists</h2>
-          <div class="influences-list" v-if="member.influences?.length">
-            <span v-for="inf in member.influences" :key="inf" class="influence-tag">{{ inf }}</span>
-          </div>
-          <p v-else class="empty">Coming soon...</p>
-        </div>
-
-        <div class="socials-section reveal" v-if="member.socials">
+        <div class="socials-section">
           <h2>Social Networks</h2>
           <div class="socials-list">
-            <a v-if="member.socials.instagram" :href="member.socials.instagram" class="social-btn" target="_blank">
+            <a v-if="member?.socials?.instagram" :href="member.socials.instagram" class="social-btn" target="_blank">
               <Instagram :size="20" /> Instagram
             </a>
-            <a v-if="member.socials.twitter" :href="member.socials.twitter" class="social-btn" target="_blank">
+            <a v-if="member?.socials?.twitter" :href="member.socials.twitter" class="social-btn" target="_blank">
               <Twitter :size="20" /> Twitter/X
             </a>
-            <a v-if="member.socials.facebook" :href="member.socials.facebook" class="social-btn" target="_blank">
+            <a v-if="member?.socials?.facebook" :href="member.socials.facebook" class="social-btn" target="_blank">
               <Facebook :size="20" /> Facebook
             </a>
-            <a v-if="member.socials.email" :href="`mailto:${member.socials.email}`" class="social-btn">
+            <a v-if="member?.socials?.email" :href="`mailto:${member.socials.email}`" class="social-btn">
               <Mail :size="20" /> Email
             </a>
+            <p v-if="!member?.socials?.instagram && !member?.socials?.twitter && !member?.socials?.facebook && !member?.socials?.email" class="empty">
+              Coming soon...
+            </p>
           </div>
         </div>
       </div>
@@ -167,8 +167,8 @@ onMounted(() => {
 
 .back-link {
   position: relative;
-  z-index: 1;
-  color: #666;
+  z-index: 10;
+  color: #888;
   text-decoration: none;
   font-family: 'Oswald', sans-serif;
   font-size: 0.9rem;
@@ -176,10 +176,14 @@ onMounted(() => {
   transition: color 0.3s ease;
   display: inline-block;
   margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #444;
+  border-radius: 4px;
 }
 
 .back-link:hover {
   color: #c44536;
+  border-color: #c44536;
 }
 
 .title {
@@ -202,10 +206,38 @@ onMounted(() => {
   text-transform: uppercase;
 }
 
+.content-section {
+  background: linear-gradient(180deg, rgba(17,17,17,0.95) 0%, rgba(10,10,10,0.98) 100%);
+  padding: 4rem 0;
+  min-height: 50vh;
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 2rem;
+}
+
+.profile-section {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.main-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+}
+
+.main-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-section {
