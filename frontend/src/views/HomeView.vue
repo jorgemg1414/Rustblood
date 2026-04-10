@@ -143,10 +143,6 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   z-index: 0;
 }
 
-@keyframes bgPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
 
 .hero-content {
   text-align: center;
@@ -186,27 +182,6 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   filter: drop-shadow(0 0 50px rgba(196, 69, 54, 0.8));
 }
 
-.band-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(4rem, 15vw, 12rem);
-  letter-spacing: 0.3em;
-  margin: 0;
-  color: #c44536;
-  text-shadow: 
-    0 0 20px rgba(196, 69, 54, 0.5),
-    0 0 40px rgba(196, 69, 54, 0.3),
-    0 0 80px rgba(196, 69, 54, 0.1);
-  animation: flicker 4s infinite;
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.8; }
-  94% { opacity: 1; }
-  96% { opacity: 0.9; }
-  97% { opacity: 1; }
-}
 
 .tagline {
   font-family: 'Oswald', sans-serif;
@@ -219,11 +194,6 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   animation: fadeInUp 1s ease-out 0.3s backwards;
 }
 
-.demo-badge {
-  font-size: 0.9rem;
-  color: #c44536;
-  animation: pulse-glow 2s ease-in-out infinite;
-}
 
 .hero-btns {
   display: flex;
@@ -445,9 +415,6 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
     padding: 0 1rem;
   }
 
-  .demo-badge {
-    font-size: 0.75rem;
-  }
 
   .hero-btns {
     gap: 1rem;

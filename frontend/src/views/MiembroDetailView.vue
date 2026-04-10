@@ -5,8 +5,9 @@ import lemmy from '../assets/members/lemmy.jpg'
 import alan from '../assets/members/alan.jpg'
 import joshua from '../assets/members/joshua.jpg'
 import edson from '../assets/members/edson.jpg'
+import exmiembro from '../assets/members/exmiembro.jpg'
 import rtscene from '../assets/rtscene.jpg'
-import { Instagram, Twitter, Facebook, Mail, Music, Guitar, Drum } from 'lucide-vue-next'
+import { Instagram, Twitter, Facebook, Mail } from 'lucide-vue-next'
 
 interface Member {
   id: string
@@ -69,6 +70,15 @@ const members: Member[] = [
     socials: {
       instagram: 'https://www.instagram.com/alan_gomez_drums/'
     }
+  },
+  {
+    id: 'jorge-martin',
+    name: 'Jorge Martin',
+    instrument: 'Guitar',
+    photo: exmiembro,
+    bio: '',
+    influences: [],
+    isFormer: true
   }
 ]
 
@@ -232,26 +242,6 @@ onMounted(() => {
   border-radius: 8px;
   background: #1a1a1a;
   border: 1px solid #333;
-}
-
-.main-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-section {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 3rem;
-  margin-bottom: 3rem;
-}
-
-.main-photo {
-  width: 100%;
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 8px;
 }
 
 .main-photo img {

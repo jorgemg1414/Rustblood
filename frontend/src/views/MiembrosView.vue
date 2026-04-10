@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import lemmy from '../assets/members/lemmy.jpg'
 import alan from '../assets/members/alan.jpg'
 import joshua from '../assets/members/joshua.jpg'
 import edson from '../assets/members/edson.jpg'
+import exmiembro from '../assets/members/exmiembro.jpg'
 import rtscene from '../assets/rtscene.jpg'
 
 interface Member {
@@ -22,7 +23,26 @@ const members: Member[] = [
   { id: 'alan', name: 'Alan Gómez', instrument: 'Drums', photo: alan }
 ]
 
+const formerMember: Member = {
+  id: 'jorge-martin',
+  name: 'Jorge Martin',
+  instrument: 'Guitar',
+  photo: exmiembro,
+  isFormer: true
+}
+
+const showFormerMember = ref(false)
+const titleClickCount = ref(0)
+
+const handleTitleClick = () => {
+  titleClickCount.value++
+  if (titleClickCount.value >= 5) {
+    showFormerMember.value = true
+  }
+}
+
 onMounted(() => {
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -42,13 +62,13 @@ onMounted(() => {
   <div class="miembros">
     <section class="page-header">
       <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
-      <h1 class="title reveal">Members</h1>
+      <h1 class="title reveal" @click="handleTitleClick">Members</h1>
     </section>
     <div class="container">
       <div class="members-grid">
-        <RouterLink 
-          v-for="(member, index) in members" 
-          :key="index" 
+        <RouterLink
+          v-for="(member, index) in members"
+          :key="index"
           :to="`/miembros/${member.id}`"
           class="member-card reveal"
           :class="`reveal-delay-${index + 1}`"
@@ -60,6 +80,21 @@ onMounted(() => {
           <p class="member-instrument">{{ member.instrument }}</p>
         </RouterLink>
       </div>
+
+      <Transition name="former">
+        <div v-if="showFormerMember" class="former-section">
+          <h2 class="section-title">Former Members</h2>
+          <div class="members-grid">
+            <div class="member-card former-member">
+              <div class="photo-wrapper">
+                <img :src="formerMember.photo" :alt="formerMember.name" class="member-photo" />
+              </div>
+              <h2 class="member-name">{{ formerMember.name }}</h2>
+              <p class="member-instrument">{{ formerMember.instrument }}</p>
+            </div>
+          </div>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -179,6 +214,21 @@ onMounted(() => {
   color: #c44536;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.former-section {
+  margin-top: 4rem;
+  border-top: 1px solid #1a1a1a;
+  padding-top: 3rem;
+}
+
+.former-enter-active {
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.former-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 @media (max-width: 768px) {

@@ -26,7 +26,7 @@ import { RouterLink } from 'vue-router'
   font-size: 6rem;
   font-weight: bold;
   margin: 0;
-  color: #c41e3a;
+  color: #c44536;
 }
 
 .content p {
@@ -38,7 +38,7 @@ import { RouterLink } from 'vue-router'
 .home-link {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background: #c41e3a;
+  background: #c44536;
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -46,6 +46,6 @@ import { RouterLink } from 'vue-router'
 }
 
 .home-link:hover {
-  background: #a01830;
+  background: #e05545;
 }
 </style>

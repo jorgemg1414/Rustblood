@@ -195,12 +195,6 @@ const socialLinks = [
   padding: 2rem;
 }
 
-.contact-form-wrapper {
-  background: #111;
-  border: 1px solid #222;
-  padding: 2rem;
-}
-
 .contact-email {
   font-family: 'Oswald', sans-serif;
   color: #888;

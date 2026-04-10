@@ -2,19 +2,8 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import logo from '../assets/logo.png'
-import rtscene from '../assets/rtscene.jpg'
 
-const membersClickCount = ref(0)
 const isMenuOpen = ref(false)
-
-const handleMembersClick = () => {
-  membersClickCount.value++
-  if (membersClickCount.value >= 5) {
-    localStorage.setItem('showFormerMember', 'true')
-    membersClickCount.value = 0
-  }
-  closeMenu()
-}
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -55,7 +44,7 @@ const closeMenu = () => {
       <RouterLink to="/musica" class="nav-link" @click="closeMenu">Music</RouterLink>
       <RouterLink to="/blog" class="nav-link" @click="closeMenu">News</RouterLink>
       <RouterLink to="/galeria" class="nav-link" @click="closeMenu">Gallery</RouterLink>
-      <RouterLink to="/miembros" class="nav-link" @click="handleMembersClick; closeMenu()">Members</RouterLink>
+      <RouterLink to="/miembros" class="nav-link" @click="closeMenu">Members</RouterLink>
       <RouterLink to="/eventos" class="nav-link" @click="closeMenu">Events</RouterLink>
       <RouterLink to="/contacto" class="nav-link" @click="closeMenu">Contact</RouterLink>
     </nav>
