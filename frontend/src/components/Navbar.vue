@@ -42,6 +42,7 @@ const closeMenu = () => {
         <img :src="logo" alt="Rustblood" class="menu-logo-img" />
       </RouterLink>
       <RouterLink to="/musica" class="nav-link" @click="closeMenu">Music</RouterLink>
+      <RouterLink to="/videos" class="nav-link" @click="closeMenu">Videos</RouterLink>
       <RouterLink to="/blog" class="nav-link" @click="closeMenu">News</RouterLink>
       <RouterLink to="/galeria" class="nav-link" @click="closeMenu">Gallery</RouterLink>
       <RouterLink to="/miembros" class="nav-link" @click="closeMenu">Members</RouterLink>

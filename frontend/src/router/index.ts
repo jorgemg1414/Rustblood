@@ -18,6 +18,11 @@ const router = createRouter({
       component: () => import('../views/MusicaView.vue')
     },
     {
+      path: '/videos',
+      name: 'videos',
+      component: () => import('../views/VideosView.vue')
+    },
+    {
       path: '/galeria',
       name: 'galeria',
       component: () => import('../views/GaleriaView.vue')
