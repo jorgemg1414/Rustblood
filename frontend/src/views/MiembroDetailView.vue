@@ -14,9 +14,14 @@ import joshua4 from '../assets/members/joshua-4.jpg'
 import joshua5 from '../assets/members/joshua-1.jpeg'
 import joshua6 from '../assets/members/joshua-2.jpeg'
 import joshua7 from '../assets/members/joshua-3.jpeg'
-import joshuaEdson1 from '../assets/members/joshua-edson-1.jpg'
+
 import edson1 from '../assets/members/edson-1.jpg'
 import edson2 from '../assets/members/edson-2.jpg'
+import edson3 from '../assets/members/edson-3.jpeg'
+import edson4 from '../assets/members/edson-4.jpeg'
+import edson5 from '../assets/members/edson-5.jpeg'
+import edsonJ1 from '../assets/members/edson-1.jpeg'
+import edsonJ2 from '../assets/members/edson-2.jpeg'
 import alan1 from '../assets/members/alan-1.jpg'
 import alan2 from '../assets/members/alan-2.jpg'
 import alan3 from '../assets/members/alan-3.jpg'
@@ -33,6 +38,13 @@ interface Member {
   photo: string
   photos?: string[]
   bio: string
+  quote?: string
+  stats?: {
+    tuning?: string
+    style?: string
+    role?: string
+  }
+  currentProjects?: string[]
   influences: string[]
   socials?: {
     instagram?: string
@@ -48,9 +60,16 @@ const members: Member[] = [
     id: 'edson',
     name: 'Edson Muñoz',
     instrument: 'Guitar & Vocals',
-    photo: edson,
-    photos: [edson1, edson2],
-    bio: '',
+    photo: edson5,
+    photos: [edson1, edson2, edson3, edson4, edson5, edsonJ1, edsonJ2],
+    bio: "I'm Edson, vocalist and guitarist of Rustblood. My style is strongly influenced by artists like Mikael Åkerfeldt, Chuck Schuldiner, and Kelly Shaefer, who have shaped the way I perform and convey emotion through my voice.\n\nOn guitar, I draw inspiration from musicians such as Chuck Schuldiner, Adam Jones, James Hetfield, Muhammed Suiçmez, Brian May, and James Bagshaw. Through this blend of influences, I aim to create a sound that combines aggression, technique, and unique atmospheres within metal.",
+    quote: '"Creating chaos with intention."',
+    stats: {
+      tuning: 'D Standard',
+      style: 'Progressive Death Metal',
+      role: 'Composer / Vocalist'
+    },
+    currentProjects: ['Rustblood', 'Souls of Sound'],
     influences: [],
     socials: {
       instagram: 'https://www.instagram.com/edsontm_/'
@@ -61,7 +80,7 @@ const members: Member[] = [
     name: 'Joshua Giacomo',
     instrument: 'Guitar',
     photo: joshua5,
-    photos: [joshua1, joshua2, joshua3, joshua4, joshuaEdson1, joshua5, joshua6, joshua7],
+    photos: [joshua1, joshua2, joshua3, joshua4, joshua5, joshua6, joshua7],
     bio: '',
     influences: [],
     socials: {
@@ -151,27 +170,51 @@ onMounted(() => {
           <div class="info-panel">
             <h2>Biography</h2>
             <p class="bio">{{ member?.bio || 'Coming soon...' }}</p>
-          </div>
-        </div>
+            
+            <div v-if="member?.quote" class="quote-section">
+              <p class="quote"> {{ member.quote }}</p>
+            </div>
 
-        <div class="socials-section">
-          <h2>Social Networks</h2>
-          <div class="socials-list">
-            <a v-if="member?.socials?.instagram" :href="member.socials.instagram" class="social-btn" target="_blank">
-              <Instagram :size="20" /> Instagram
-            </a>
-            <a v-if="member?.socials?.twitter" :href="member.socials.twitter" class="social-btn" target="_blank">
-              <Twitter :size="20" /> Twitter/X
-            </a>
-            <a v-if="member?.socials?.facebook" :href="member.socials.facebook" class="social-btn" target="_blank">
-              <Facebook :size="20" /> Facebook
-            </a>
-            <a v-if="member?.socials?.email" :href="`mailto:${member.socials.email}`" class="social-btn">
-              <Mail :size="20" /> Email
-            </a>
-            <p v-if="!member?.socials?.instagram && !member?.socials?.twitter && !member?.socials?.facebook && !member?.socials?.email" class="empty">
-              Coming soon...
-            </p>
+            <div v-if="member?.stats" class="stats-section">
+              <div class="stat-item" v-if="member.stats.tuning">
+                <span class="stat-label">Tuning</span>
+                <span class="stat-value">{{ member.stats.tuning }}</span>
+              </div>
+              <div class="stat-item" v-if="member.stats.style">
+                <span class="stat-label">Style</span>
+                <span class="stat-value">{{ member.stats.style }}</span>
+              </div>
+              <div class="stat-item" v-if="member.stats.role">
+                <span class="stat-label">Role</span>
+                <span class="stat-value">{{ member.stats.role }}</span>
+              </div>
+            </div>
+
+            <div v-if="member?.currentProjects?.length" class="projects-section">
+              <h3>Current Projects</h3>
+              <ul class="projects-list">
+                <li v-for="project in member.currentProjects" :key="project">{{ project }}</li>
+              </ul>
+            </div>
+
+            <h2>Social Networks</h2>
+            <div class="socials-list">
+              <a v-if="member?.socials?.instagram" :href="member.socials.instagram" class="social-btn" target="_blank">
+                <Instagram :size="20" /> Instagram
+              </a>
+              <a v-if="member?.socials?.twitter" :href="member.socials.twitter" class="social-btn" target="_blank">
+                <Twitter :size="20" /> Twitter/X
+              </a>
+              <a v-if="member?.socials?.facebook" :href="member.socials.facebook" class="social-btn" target="_blank">
+                <Facebook :size="20" /> Facebook
+              </a>
+              <a v-if="member?.socials?.email" :href="`mailto:${member.socials.email}`" class="social-btn">
+                <Mail :size="20" /> Email
+              </a>
+              <p v-if="!member?.socials?.instagram && !member?.socials?.twitter && !member?.socials?.facebook && !member?.socials?.email" class="empty">
+                Coming soon...
+              </p>
+            </div>
           </div>
         </div>
 
@@ -384,7 +427,95 @@ onMounted(() => {
   font-size: 1.1rem;
   line-height: 1.8;
   color: #aaa;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.quote-section {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(196, 69, 54, 0.1) 0%, rgba(196, 69, 54, 0.05) 100%);
+  border-left: 3px solid #c44536;
+  border-radius: 0 8px 8px 0;
+}
+
+.quote {
+  font-family: 'Oswald', sans-serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: #e8e8e8;
+  margin: 0;
+}
+
+.stats-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.stat-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+  color: #c44536;
+  font-weight: 600;
+}
+
+.projects-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.projects-section h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  color: #c44536;
+  margin: 0 0 0.75rem;
+}
+
+.projects-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.projects-list li {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  color: #aaa;
+  padding: 0.4rem 0;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.projects-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #c44536;
 }
 
 .influences-section h2,
