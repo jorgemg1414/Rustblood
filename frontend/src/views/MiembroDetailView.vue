@@ -163,8 +163,11 @@ onMounted(() => {
     <section class="content-section">
       <div class="container">
         <div class="profile-section">
-          <div class="main-photo">
-            <img :src="member?.photo" :alt="member?.name" />
+          <div class="photo-column">
+            <h2 class="member-fullname">{{ member?.name }}</h2>
+            <div class="main-photo">
+              <img :src="member?.photo" :alt="member?.name" />
+            </div>
           </div>
           
           <div class="info-panel">
@@ -327,6 +330,11 @@ onMounted(() => {
   margin-bottom: 3rem;
 }
 
+.photo-column {
+  display: flex;
+  flex-direction: column;
+}
+
 .photos-section {
   margin-top: 3rem;
   padding-top: 3rem;
@@ -418,6 +426,11 @@ onMounted(() => {
   font-size: 1.8rem;
   letter-spacing: 0.1em;
   color: #c44536;
+  margin-bottom: 1rem;
+}
+
+.member-fullname {
+  font-size: 2.2rem;
   margin-bottom: 1rem;
 }
 
