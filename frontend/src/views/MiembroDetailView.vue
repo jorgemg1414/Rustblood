@@ -11,6 +11,9 @@ import joshua1 from '../assets/members/joshua-1.jpg'
 import joshua2 from '../assets/members/joshua-2.jpg'
 import joshua3 from '../assets/members/joshua-3.jpg'
 import joshua4 from '../assets/members/joshua-4.jpg'
+import joshua5 from '../assets/members/joshua-1.jpeg'
+import joshua6 from '../assets/members/joshua-2.jpeg'
+import joshua7 from '../assets/members/joshua-3.jpeg'
 import joshuaEdson1 from '../assets/members/joshua-edson-1.jpg'
 import edson1 from '../assets/members/edson-1.jpg'
 import edson2 from '../assets/members/edson-2.jpg'
@@ -57,8 +60,8 @@ const members: Member[] = [
     id: 'joshua',
     name: 'Joshua Giacomo',
     instrument: 'Guitar',
-    photo: joshua,
-    photos: [joshua1, joshua2, joshua3, joshua4, joshuaEdson1],
+    photo: joshua5,
+    photos: [joshua1, joshua2, joshua3, joshua4, joshuaEdson1, joshua5, joshua6, joshua7],
     bio: '',
     influences: [],
     socials: {
