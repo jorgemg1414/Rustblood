@@ -7,6 +7,20 @@ import joshua from '../assets/members/joshua.jpg'
 import edson from '../assets/members/edson.jpg'
 import exmiembro from '../assets/members/exmiembro.jpg'
 import rtscene from '../assets/rtscene.jpg'
+import joshua1 from '../assets/members/joshua-1.jpg'
+import joshua2 from '../assets/members/joshua-2.jpg'
+import joshua3 from '../assets/members/joshua-3.jpg'
+import joshua4 from '../assets/members/joshua-4.jpg'
+import joshuaEdson1 from '../assets/members/joshua-edson-1.jpg'
+import edson1 from '../assets/members/edson-1.jpg'
+import edson2 from '../assets/members/edson-2.jpg'
+import alan1 from '../assets/members/alan-1.jpg'
+import alan2 from '../assets/members/alan-2.jpg'
+import alan3 from '../assets/members/alan-3.jpg'
+import lemmy1 from '../assets/members/lemmy-1.jpg'
+import lemmy2 from '../assets/members/lemmy-2.jpg'
+import lemmy3 from '../assets/members/lemmy-3.jpg'
+import lemmy4 from '../assets/members/lemmy-4.jpg'
 import { Instagram, Twitter, Facebook, Mail } from 'lucide-vue-next'
 
 interface Member {
@@ -32,6 +46,7 @@ const members: Member[] = [
     name: 'Edson Muñoz',
     instrument: 'Guitar & Vocals',
     photo: edson,
+    photos: [edson1, edson2],
     bio: '',
     influences: [],
     socials: {
@@ -43,6 +58,7 @@ const members: Member[] = [
     name: 'Joshua Giacomo',
     instrument: 'Guitar',
     photo: joshua,
+    photos: [joshua1, joshua2, joshua3, joshua4, joshuaEdson1],
     bio: '',
     influences: [],
     socials: {
@@ -54,6 +70,7 @@ const members: Member[] = [
     name: 'Lemmy Yeudhiel',
     instrument: 'Bass',
     photo: lemmy,
+    photos: [lemmy1, lemmy2, lemmy3, lemmy4],
     bio: '',
     influences: [],
     socials: {
@@ -65,6 +82,7 @@ const members: Member[] = [
     name: 'Alan Gómez',
     instrument: 'Drums',
     photo: alan,
+    photos: [alan1, alan2, alan3],
     bio: '',
     influences: [],
     socials: {
@@ -85,6 +103,15 @@ const members: Member[] = [
 const route = useRoute()
 const router = useRouter()
 const memberId = route.params.name as string
+const selectedPhoto = ref<string | null>(null)
+
+const openPhoto = (photo: string) => {
+  selectedPhoto.value = photo
+}
+
+const closePhoto = () => {
+  selectedPhoto.value = null
+}
 
 const member = computed(() => {
   const id = memberId?.toLowerCase()
@@ -143,6 +170,25 @@ onMounted(() => {
               Coming soon...
             </p>
           </div>
+        </div>
+
+        <div v-if="member?.photos?.length" class="photos-section">
+          <h2>Photos</h2>
+          <div class="photos-grid">
+            <img 
+              v-for="(photo, index) in member?.photos" 
+              :key="index" 
+              :src="photo" 
+              :alt="`${member?.name} photo ${index + 1}`"
+              @click="openPhoto(photo)"
+              class="clickable"
+            />
+          </div>
+        </div>
+
+        <div v-if="selectedPhoto" class="photo-modal" @click="closePhoto">
+          <button class="close-btn">&times;</button>
+          <img :src="selectedPhoto" :alt="member?.name" />
         </div>
       </div>
     </section>
@@ -223,31 +269,102 @@ onMounted(() => {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
 .profile-section {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr;
   gap: 3rem;
   margin-bottom: 3rem;
 }
 
-.main-photo {
+.photos-section {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid #333;
+}
+
+.photos-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.1em;
+  color: #c44536;
+  margin-bottom: 1.5rem;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.photos-grid img {
   width: 100%;
-  aspect-ratio: 1;
-  overflow: hidden;
+  height: auto;
+  display: block;
   border-radius: 8px;
   background: #1a1a1a;
   border: 1px solid #333;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: scale(1.02);
+  border-color: #c44536;
+}
+
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.photo-modal img {
+  max-width: 90%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 3rem;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.photos-grid img:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.main-photo {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  box-shadow: 0 8px 40px rgba(196, 69, 54, 0.15);
 }
 
 .main-photo img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: block;
 }
 
 .info-panel h2 {
@@ -265,28 +382,6 @@ onMounted(() => {
   line-height: 1.8;
   color: #aaa;
   margin-bottom: 2rem;
-}
-
-.extra-photos h3 {
-  font-family: 'Oswald', sans-serif;
-  font-size: 0.9rem;
-  color: #666;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-}
-
-.photos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 0.5rem;
-}
-
-.photos-grid img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 4px;
 }
 
 .influences-section h2,
@@ -352,7 +447,7 @@ onMounted(() => {
   }
   
   .main-photo {
-    max-width: 300px;
+    max-width: 100%;
     margin: 0 auto;
   }
   

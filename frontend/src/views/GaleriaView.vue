@@ -52,14 +52,23 @@ const closeLightbox = () => selectedPhoto.value = null
 .title {
   position: relative;
   z-index: 1;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4rem;
+  letter-spacing: 0.2em;
+  color: #c44536;
+  text-align: center;
+  margin: 0;
 }
 .subtitle {
   position: relative;
   z-index: 1;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 3rem;
 }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
-.title { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; letter-spacing: 0.2em; color: #c44536; text-align: center; padding-top: 80px; margin: 0; }
-.subtitle { font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: #666; text-align: center; margin-bottom: 3rem; }
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 .gallery-item { aspect-ratio: 4/3; overflow: hidden; cursor: pointer; border-radius: 4px; }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }

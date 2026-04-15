@@ -5,6 +5,7 @@ import logo from '../assets/logo.png'
 import albumCover from '../assets/album.jpg'
 import heroVideo from '../assets/prueba_home.mp4'
 import rtscene from '../assets/rtscene.jpg'
+import rb7 from '../assets/photos/rb7.jpeg'
 
 const particles = ref<{ id: number; left: string; delay: string; size: string }[]>([])
 
@@ -83,6 +84,21 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
             <p class="album-year">PRÓXIMAMENTE 2026</p>
             <RouterLink to="/musica" class="btn btn-primary">View Discography</RouterLink>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="photo-section">
+      <div class="parallax-photo parallax-photo--top reveal" :style="{ backgroundImage: `url(${rb7})` }"></div>
+    </section>
+
+    <section class="members-cta">
+      <div class="container">
+        <h2 class="section-title reveal">The Band</h2>
+        <p class="reveal reveal-delay-1">Meet the people behind the sound.</p>
+        <div class="cta-btns reveal reveal-delay-2">
+          <RouterLink to="/miembros" class="btn btn-primary">Meet the Members</RouterLink>
+          <RouterLink to="/galeria" class="btn btn-secondary">View Gallery</RouterLink>
         </div>
       </div>
     </section>
@@ -300,7 +316,7 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 
 .photo-section {
   position: relative;
-  height: 50vh;
+  height: 70vh;
   overflow: hidden;
 }
 
@@ -454,6 +470,31 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
   .album-info .album-year {
     font-size: 0.9rem;
   }
+}
+
+.parallax-photo--top {
+  background-position: top center;
+}
+
+.members-cta {
+  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  text-align: center;
+  border-top: 1px solid #1a1a1a;
+}
+
+.members-cta p {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+.cta-btns {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 480px) {

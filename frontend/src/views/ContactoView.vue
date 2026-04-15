@@ -86,6 +86,8 @@ const socialLinks = [
 }
 
 .page-title {
+  position: relative;
+  z-index: 1;
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(3rem, 10vw, 6rem);
   letter-spacing: 0.2em;
@@ -94,6 +96,8 @@ const socialLinks = [
 }
 
 .page-subtitle {
+  position: relative;
+  z-index: 1;
   font-family: 'Oswald', sans-serif;
   font-size: 1.2rem;
   color: #666;

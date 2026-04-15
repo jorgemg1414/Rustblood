@@ -229,6 +229,7 @@ const closeMenu = () => {
 .nav-mobile.open {
   opacity: 1;
   visibility: visible;
+  transform: scale(1);
 }
 
 .close-menu {
@@ -335,6 +336,7 @@ const closeMenu = () => {
   .nav-mobile.open {
     opacity: 1;
     visibility: visible;
+    transform: scale(1);
   }
 
   .nav-mobile .nav-link {

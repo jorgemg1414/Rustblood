@@ -2,12 +2,24 @@ import foto1 from '../assets/photos/rb1.jpg'
 import foto2 from '../assets/photos/rb2.jpeg'
 import foto3 from '../assets/photos/rb3.jpeg'
 import foto4 from '../assets/photos/rb4.jpeg'
+import foto5 from '../assets/photos/rb5.jpeg'
+import foto6 from '../assets/photos/rb6.jpeg'
+import foto7 from '../assets/photos/rb7.jpeg'
+import foto8 from '../assets/photos/rb8.jpeg'
+import foto9 from '../assets/photos/rb9.jpeg'
+import foto10 from '../assets/photos/rb10.jpeg'
 
 export const gallery = [
   { id: 1, title: 'Live Show 1', image: foto1 },
   { id: 2, title: 'Live Show 2', image: foto2 },
   { id: 3, title: 'Backstage', image: foto3 },
   { id: 4, title: 'Stage Performance', image: foto4 },
+  { id: 5, title: 'Live Show 5', image: foto5 },
+  { id: 6, title: 'Live Show 6', image: foto6 },
+  { id: 7, title: 'Live Show 7', image: foto7 },
+  { id: 8, title: 'Live Show 8', image: foto8 },
+  { id: 9, title: 'Live Show 9', image: foto9 },
+  { id: 10, title: 'Live Show 10', image: foto10 },
 ]
 
 export const posts = [
