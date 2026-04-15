@@ -99,6 +99,7 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
         <div class="cta-btns reveal reveal-delay-2">
           <RouterLink to="/miembros" class="btn btn-primary">Meet the Members</RouterLink>
           <RouterLink to="/galeria" class="btn btn-secondary">View Gallery</RouterLink>
+          <RouterLink to="/videos" class="btn btn-secondary">Watch Videos</RouterLink>
         </div>
       </div>
     </section>
