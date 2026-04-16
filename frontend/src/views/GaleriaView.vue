@@ -18,7 +18,7 @@ const closeLightbox = () => selectedPhoto.value = null
     <div class="container">
       <div class="gallery-grid">
         <div v-for="photo in photos" :key="photo.id" class="gallery-item" @click="openLightbox(photo)">
-          <img :src="photo.image" :alt="photo.title" />
+          <img :src="photo.image" :alt="photo.title" loading="lazy" />
         </div>
       </div>
     </div>

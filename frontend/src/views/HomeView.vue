@@ -131,8 +131,6 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600&display=swap');
-
 .home {
   min-height: 100vh;
 }

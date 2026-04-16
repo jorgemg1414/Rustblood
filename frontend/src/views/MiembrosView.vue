@@ -74,7 +74,7 @@ onMounted(() => {
           :class="`reveal-delay-${index + 1}`"
         >
           <div class="photo-wrapper">
-            <img :src="member.photo" :alt="member.name" class="member-photo" />
+            <img :src="member.photo" :alt="member.name" class="member-photo" loading="lazy" />
           </div>
           <h2 class="member-name">{{ member.name }}</h2>
           <p class="member-instrument">{{ member.instrument }}</p>

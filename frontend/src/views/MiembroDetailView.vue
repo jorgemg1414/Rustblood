@@ -245,8 +245,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600&display=swap');
-
 .member-detail {
   min-height: 100vh;
   padding-bottom: 4rem;
