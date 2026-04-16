@@ -6,6 +6,7 @@ import albumCover from '../assets/album.jpg'
 import heroVideo from '../assets/prueba_home.mp4'
 import rtscene from '../assets/rtscene.jpg'
 import rb7 from '../assets/photos/rb7.jpeg'
+import tepaMetalFest from '../assets/photos/tepa-metal-fest.jpg'
 
 const particles = ref<{ id: number; left: string; delay: string; size: string }[]>([])
 
@@ -90,6 +91,29 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 
     <section class="photo-section">
       <div class="parallax-photo parallax-photo--top reveal" :style="{ backgroundImage: `url(${rb7})` }"></div>
+    </section>
+
+    <section class="next-show">
+      <div class="container">
+        <h2 class="section-title reveal">Next Show</h2>
+        <div class="next-show-card reveal reveal-delay-1">
+          <img :src="tepaMetalFest" alt="Tepa Metal Fest" class="next-show-flyer" />
+          <div class="next-show-info">
+            <div class="next-show-date">
+              <span class="date-num">07</span>
+              <span class="date-month">NOV</span>
+              <span class="date-day">SAB</span>
+            </div>
+            <div class="next-show-details">
+              <span class="next-show-city">Tepatitlán, Jalisco</span>
+              <span class="next-show-venue">Terraza Alameda</span>
+              <span class="next-show-address">Av. Ricardo Alcalá #69</span>
+            </div>
+            <a href="https://www.ticketopolis.com/tepametalfest/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Tickets</a>
+          </div>
+        </div>
+        <RouterLink to="/eventos" class="btn btn-secondary reveal reveal-delay-2">All Events</RouterLink>
+      </div>
     </section>
 
     <section class="members-cta">
@@ -475,6 +499,108 @@ Their lyrical and musical approach addresses existential, philosophical, and psy
 
 .parallax-photo--top {
   background-position: top center;
+}
+
+.next-show {
+  background: #0a0a0a;
+  text-align: center;
+}
+
+.next-show-card {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  background: #111;
+  border: 1px solid #222;
+  overflow: hidden;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  flex-wrap: wrap;
+}
+
+.next-show-flyer {
+  width: 280px;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+.next-show-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.next-show-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.next-show-date .date-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: #c44536;
+  line-height: 1;
+}
+
+.next-show-date .date-month {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.85rem;
+  color: #666;
+  letter-spacing: 0.1em;
+}
+
+.next-show-date .date-day {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  color: #444;
+  letter-spacing: 0.1em;
+}
+
+.next-show-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.next-show-city {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e8e8e8;
+}
+
+.next-show-venue {
+  font-family: 'Oswald', sans-serif;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.next-show-address {
+  font-family: 'Oswald', sans-serif;
+  color: #444;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .next-show-card {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .next-show-flyer {
+    width: 100%;
+  }
+
+  .next-show-details {
+    text-align: center;
+  }
 }
 
 .members-cta {

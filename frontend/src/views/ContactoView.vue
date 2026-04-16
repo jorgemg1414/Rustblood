@@ -8,7 +8,7 @@ const contactInfo = [
 ]
 
 const socialLinks = [
-  { name: 'Instagram', url: 'https://instagram.com/rustblood', icon: Instagram },
+  { name: 'Instagram', url: 'https://instagram.com/rustblood_band', icon: Instagram },
   { name: 'YouTube', url: 'https://youtube.com/@Rustblood_band', icon: Youtube },
 ]
 </script>

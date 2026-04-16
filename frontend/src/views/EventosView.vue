@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import rtscene from '../assets/rtscene.jpg'
+import tepaMetalFest from '../assets/photos/tepa-metal-fest.jpg'
 
 interface TourDate {
   date: string
@@ -8,18 +9,22 @@ interface TourDate {
   month: string
   city: string
   venue: string
+  address: string
   ticketUrl: string
-  soldOut?: boolean
+  flyer?: string
 }
 
 const tourDates: TourDate[] = [
-  { date: '15', day: 'SAB', month: 'MAR', city: 'Tepito, MX', venue: 'La Riviera', ticketUrl: '#' },
-  { date: '05', day: 'SAB', month: 'ABR', city: 'Oaxaca, MX', venue: 'Bilbao BBK Live', ticketUrl: '#', soldOut: true },
-]
-
-const pastEvents = [
-  { date: '10 ENE', city: 'Zaragoza, ES', venue: 'La Lata' },
-  { date: '28 DIC', city: 'Vigo, ES', venue: 'Club Oui' },
+  {
+    date: '07',
+    day: 'SAB',
+    month: 'NOV',
+    city: 'Tepatitlán, Jalisco',
+    venue: 'Terraza Alameda',
+    address: 'Av. Ricardo Alcalá #69',
+    ticketUrl: 'https://www.ticketopolis.com/tepametalfest/',
+    flyer: tepaMetalFest,
+  },
 ]
 
 onMounted(() => {
@@ -49,32 +54,24 @@ onMounted(() => {
     <section class="tour-section">
       <div class="container">
         <h2 class="section-title reveal">Upcoming Shows</h2>
-        <div class="tour-list">
-          <div v-for="(show, index) in tourDates" :key="show.date + show.city" class="tour-item reveal" :class="`reveal-delay-${index + 1}`">
-            <div class="tour-date-box">
-              <span class="date-num">{{ show.date }}</span>
-              <span class="date-month">{{ show.month }}</span>
-              <span class="date-day">{{ show.day }}</span>
+        <div class="events-grid">
+          <div v-for="(show, index) in tourDates" :key="show.date + show.city" class="event-card reveal" :class="`reveal-delay-${index + 1}`">
+            <div v-if="show.flyer" class="event-flyer">
+              <img :src="show.flyer" :alt="`${show.city} - ${show.venue}`" />
             </div>
-            <div class="tour-info">
-              <span class="tour-city">{{ show.city }}</span>
-              <span class="tour-venue">{{ show.venue }}</span>
+            <div class="event-body">
+              <div class="tour-date-box">
+                <span class="date-num">{{ show.date }}</span>
+                <span class="date-month">{{ show.month }}</span>
+                <span class="date-day">{{ show.day }}</span>
+              </div>
+              <div class="tour-info">
+                <span class="tour-city">{{ show.city }}</span>
+                <span class="tour-venue">{{ show.venue }}</span>
+                <span class="tour-address">{{ show.address }}</span>
+              </div>
+              <a :href="show.ticketUrl" class="btn btn-ticket" target="_blank" rel="noopener noreferrer">Tickets</a>
             </div>
-            <a v-if="!show.soldOut" :href="show.ticketUrl" class="btn btn-ticket">Tickets</a>
-            <span v-else class="sold-out">Sold Out</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="past-section">
-      <div class="container">
-        <h2 class="section-title">Past Events</h2>
-        <div class="past-list">
-          <div v-for="event in pastEvents" :key="event.date + event.city" class="past-item">
-            <span class="past-date">{{ event.date }}</span>
-            <span class="past-city">{{ event.city }}</span>
-            <span class="past-venue">{{ event.venue }}</span>
           </div>
         </div>
       </div>
@@ -142,24 +139,37 @@ onMounted(() => {
   background: #0a0a0a;
 }
 
-.tour-list {
-  background: #111;
-  border: 1px solid #222;
+.events-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.tour-item {
+.event-card {
+  background: #111;
+  border: 1px solid #222;
+  overflow: hidden;
+}
+
+.event-flyer {
+  width: 100%;
+}
+
+.event-flyer img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.event-body {
   display: flex;
   align-items: center;
   padding: 1.5rem 2rem;
-  border-bottom: 1px solid #222;
+  gap: 2rem;
   transition: background 0.3s ease;
 }
 
-.tour-item:last-child {
-  border-bottom: none;
-}
-
-.tour-item:hover {
+.event-card:hover .event-body {
   background: #1a1a1a;
 }
 
@@ -211,6 +221,11 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
+.tour-address {
+  color: #444;
+  font-size: 0.8rem;
+}
+
 .btn-ticket {
   font-family: 'Oswald', sans-serif;
   font-size: 0.8rem;
@@ -236,61 +251,19 @@ onMounted(() => {
   color: #444;
 }
 
-.past-section {
-  background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
-}
-
-.past-list {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.past-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 0;
-  border-bottom: 1px solid #222;
-  font-family: 'Oswald', sans-serif;
-}
-
-.past-date {
-  color: #666;
-  font-size: 0.9rem;
-  min-width: 80px;
-}
-
-.past-city {
-  color: #888;
-  flex: 1;
-  text-align: center;
-}
-
-.past-venue {
-  color: #444;
-  font-size: 0.9rem;
-  text-align: right;
-}
 
 @media (max-width: 768px) {
   .page-header { padding: 6rem 2rem 3rem; }
   .container { padding: 2rem 1rem; }
   
-  .tour-item {
+  .event-body {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
     padding: 1.5rem 1rem;
   }
-  
+
   .tour-date-box { margin-right: 0; }
-  
-  .past-item {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
-  }
-  
-  .past-date, .past-city, .past-venue { text-align: center; }
 }
 
 @media (max-width: 480px) {
