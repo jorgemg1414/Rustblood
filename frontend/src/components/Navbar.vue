@@ -323,9 +323,11 @@ const closeMenu = () => {
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 2rem;
+    gap: 0;
+    overflow-y: auto;
+    padding: 5rem 2rem 3rem;
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0;
     visibility: hidden;
@@ -339,8 +341,24 @@ const closeMenu = () => {
     transform: scale(1);
   }
 
+  .nav-mobile .menu-logo {
+    margin-bottom: 1.5rem;
+  }
+
+  .nav-mobile .menu-logo-img {
+    height: 50px;
+  }
+
   .nav-mobile .nav-link {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
+    padding: 0.75rem 0;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .nav-mobile .nav-link:last-child {
+    border-bottom: none;
   }
 }
 
