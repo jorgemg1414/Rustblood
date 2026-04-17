@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { posts } from '../data/content'
 import rtscene from '../assets/rtscene.jpg'
 
@@ -9,6 +10,9 @@ const formatDate = (dateStr: string) => {
     day: 'numeric'
   })
 }
+
+const featuredPost = computed(() => posts[0])
+const regularPosts = computed(() => posts.slice(1))
 </script>
 
 <template>
@@ -21,19 +25,38 @@ const formatDate = (dateStr: string) => {
 
     <section class="posts-section">
       <div class="container">
-        <div class="posts-list">
-          <article 
-            v-for="post in posts" 
-            :key="post.id" 
+
+        <!-- Featured post -->
+        <article v-if="featuredPost" class="post-card featured">
+          <div class="featured-badge">Latest</div>
+          <div class="post-content">
+            <div class="post-meta">
+              <span class="post-date">{{ formatDate(featuredPost.date) }}</span>
+            </div>
+            <h2 class="post-title">{{ featuredPost.title }}</h2>
+            <p class="post-excerpt">{{ featuredPost.content }}</p>
+            <span class="read-more">Read more <span class="arrow">→</span></span>
+          </div>
+        </article>
+
+        <!-- Regular posts -->
+        <div class="posts-list" v-if="regularPosts.length">
+          <article
+            v-for="post in regularPosts"
+            :key="post.id"
             class="post-card"
           >
             <div class="post-content">
-              <span class="post-date">{{ formatDate(post.date) }}</span>
+              <div class="post-meta">
+                <span class="post-date">{{ formatDate(post.date) }}</span>
+              </div>
               <h2 class="post-title">{{ post.title }}</h2>
               <p class="post-excerpt">{{ post.content }}</p>
+              <span class="read-more">Read more <span class="arrow">→</span></span>
             </div>
           </article>
         </div>
+
       </div>
     </section>
   </div>
@@ -93,101 +116,161 @@ const formatDate = (dateStr: string) => {
   background: #0a0a0a;
 }
 
-.loading, .empty, .error {
-  text-align: center;
-  color: #666;
-  font-family: 'Oswald', sans-serif;
-  padding: 4rem;
-}
-
-.error {
-  color: #c44536;
-}
-
 .posts-list {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
+/* Base card */
 .post-card {
   background: #111;
-  border: 1px solid #222;
-  border-radius: 8px;
+  border: 1px solid #1e1e1e;
+  border-left: 3px solid #c44536;
+  border-radius: 4px;
   overflow: hidden;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  cursor: pointer;
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
+  transform: translateX(6px);
   border-color: #c44536;
-  box-shadow: 0 20px 40px rgba(196, 69, 54, 0.15);
+  box-shadow: 0 8px 30px rgba(196, 69, 54, 0.15);
 }
 
-.post-image {
-  width: 100%;
-  height: 300px;
-  overflow: hidden;
+/* Featured card overrides */
+.post-card.featured {
+  border-left-width: 4px;
+  background: linear-gradient(135deg, #161616 0%, #111 60%);
+  margin-bottom: 0;
 }
 
-.post-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+.post-card.featured:hover {
+  transform: translateX(8px);
+  box-shadow: 0 12px 40px rgba(196, 69, 54, 0.2);
 }
 
-.post-card:hover .post-image img {
-  transform: scale(1.05);
+.post-card.featured .post-title {
+  font-size: 2.4rem;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c44536;
+  background: rgba(196, 69, 54, 0.12);
+  border: 1px solid rgba(196, 69, 54, 0.3);
+  border-radius: 2px;
+  padding: 0.2rem 0.6rem;
 }
 
 .post-content {
   padding: 2rem;
+  padding-right: 7rem;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .post-date {
   font-family: 'Oswald', sans-serif;
-  font-size: 0.85rem;
-  color: #c44536;
+  font-size: 0.8rem;
+  color: #555;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
 .post-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   letter-spacing: 0.05em;
   color: #e8e8e8;
-  margin: 0.5rem 0 1rem;
+  margin: 0 0 0.75rem;
+  transition: color 0.3s ease;
+  line-height: 1.1;
+}
+
+.post-card:hover .post-title {
+  color: #fff;
 }
 
 .post-excerpt {
   font-family: 'Oswald', sans-serif;
   font-weight: 300;
-  color: #888;
+  color: #666;
   line-height: 1.7;
-  margin: 0;
+  margin: 0 0 1.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.read-more {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #c44536;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, gap 0.2s ease;
+}
+
+.post-card:hover .read-more {
+  opacity: 1;
+}
+
+.arrow {
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.post-card:hover .arrow {
+  transform: translateX(4px);
 }
 
 @media (max-width: 768px) {
   .page-header { padding: 6rem 2rem 3rem; }
   .container { padding: 2rem 1rem; }
-  
-  .post-image {
-    height: 200px;
-  }
-  
+
   .post-content {
     padding: 1.5rem;
+    padding-right: 1.5rem;
   }
-  
+
+  .post-card.featured .post-title {
+    font-size: 1.8rem;
+  }
+
   .post-title {
     font-size: 1.5rem;
   }
 
-  .post-card:active {
-    transform: translateY(-2px);
-    border-color: #c44536;
+  .featured-badge {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+  }
+
+  .post-card:hover {
+    transform: translateX(4px);
   }
 }
 </style>
