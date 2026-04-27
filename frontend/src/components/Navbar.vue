@@ -10,9 +10,7 @@ const toggleMenu = () => {
 }
 
 const closeMenu = () => {
-  setTimeout(() => {
-    isMenuOpen.value = false
-  }, 100)
+  isMenuOpen.value = false
 }
 </script>
 

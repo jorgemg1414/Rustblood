@@ -1,39 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import albumCover from '../assets/album.jpg'
+import PageHeader from '../components/PageHeader.vue'
 import rtscene from '../assets/rtscene.jpg'
-import { Music, Headphones, Play, Guitar } from 'lucide-vue-next'
-
-interface Album {
-  title: string
-  year: number
-  cover: string
-  description: string
-  tracks: string[]
-  released?: boolean
-}
-
-const albums: Album[] = [
-  { 
-    title: 'Dissolution Beyond',
-    year: 2026, 
-    cover: albumCover,
-    description: 'Our first album, a deep exploration of human resilience.',
-    tracks: ['Dissolution Beyond', 'In a crypt', 'Hollow Throne', 'Freedom of Die', 'Hope Denied'],
-    released: true
-  },
-]
-
-const videos = [
-  { id: 'cSLdIj_iwgI', title: 'RustBlood - Freedom of Die (Hoka Hey 2025)' },
-]
-
-const socialLinks = [
-  { name: 'Spotify', url: '#', icon: Music },
-  { name: 'Apple Music', url: '#', icon: Headphones },
-  { name: 'YouTube', url: 'https://www.youtube.com/@Rustblood_band', icon: Play },
-  { name: 'Bandcamp', url: '#', icon: Guitar }
-]
+import { albums, videos, socialLinks } from '../data/content'
 
 onMounted(() => {
   const observer = new IntersectionObserver(
@@ -53,16 +22,12 @@ onMounted(() => {
 
 <template>
   <div class="musica">
-    <section class="page-header">
-      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
-      <h1 class="page-title reveal">Music</h1>
-      <p class="page-subtitle reveal reveal-delay-1">Our discography</p>
-    </section>
+    <PageHeader title="Music" subtitle="Our discography" :bgImage="rtscene" />
 
     <section class="albums-section">
       <div class="container">
         <div v-for="album in albums" :key="album.title" class="album-card reveal reveal-delay-2" :class="{ 'not-released': !album.released }">
-          <img :src="album.cover" alt="Album cover" class="album-cover" />
+          <img :src="album.cover" alt="Album cover" class="album-cover" loading="lazy" />
           <div class="album-content">
             <h2 class="album-title">{{ album.title }}</h2>
             <span class="album-year">{{ album.year }}</span>
@@ -92,13 +57,14 @@ onMounted(() => {
       <div class="container">
         <h2 class="section-title reveal">Videos</h2>
         <div class="videos-grid">
-          <div v-for="video in videos" :key="video.id" class="video-card reveal reveal-delay-1">
-            <iframe 
-              :src="`https://www.youtube.com/embed/${video.id}`" 
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowfullscreen
-            ></iframe>
+            <div v-for="video in videos" :key="video.id" class="video-card reveal reveal-delay-1">
+              <iframe 
+                :src="`https://www.youtube.com/embed/${video.id}`" 
+                :title="video.title"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+              ></iframe>
             <p class="video-title">{{ video.title }}</p>
           </div>
         </div>

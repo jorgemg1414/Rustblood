@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import PageHeader from '../components/PageHeader.vue'
 import lemmy from '../assets/members/lemmy.jpg'
 import alan from '../assets/members/alan.jpg'
 import joshua from '../assets/members/joshua.jpg'
@@ -59,10 +60,8 @@ onMounted(() => {
 
 <template>
   <div class="miembros">
-    <section class="page-header">
-      <div class="page-bg" :style="{ backgroundImage: `url(${rtscene})` }"></div>
-      <h1 class="title reveal" @click="handleTitleClick">Members</h1>
-    </section>
+    <PageHeader title="Members" :bgImage="rtscene" />
+    <h1 class="title reveal" @click="handleTitleClick">Members</h1>
     <div class="container">
       <div class="members-grid">
         <RouterLink
